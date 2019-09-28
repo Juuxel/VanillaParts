@@ -6,15 +6,17 @@ import alexiil.mc.lib.multipart.api.NativeMultipart;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.ImmutableMap;
 import juuxel.carpetparts.api.CarpetPartInitializer;
+import juuxel.carpetparts.part.CarpetPart;
+import juuxel.carpetparts.part.StatelessPartFactory;
+import juuxel.carpetparts.part.TorchPart;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CarpetBlock;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
@@ -27,6 +29,10 @@ import java.util.List;
 public final class CarpetParts implements ModInitializer {
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
     public static final ImmutableMap<DyeColor, Block> CARPETS;
+    public static final PartDefinition TORCH = new PartDefinition(
+            id("torch"), TorchPart::new,
+            (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
+    );
 
     static {
         ImmutableMap.Builder<DyeColor, PartDefinition> partMapBuilder = ImmutableMap.builder();
@@ -64,12 +70,17 @@ public final class CarpetParts implements ModInitializer {
         return new Identifier("carpet_parts", path);
     }
 
+    private static void register(PartDefinition def) {
+        PartDefinition.PARTS.put(def.identifier, def);
+    }
+
     @Override
     public void onInitialize() {
         // Register carpet parts
         for (PartDefinition def : CARPET_PARTS.values()) {
-            PartDefinition.PARTS.put(def.identifier, def);
+            register(def);
         }
+        register(TORCH);
 
         // Load carpet part initializers
         List<CarpetPartInitializer> initializers = FabricLoader.getInstance()
@@ -79,39 +90,63 @@ public final class CarpetParts implements ModInitializer {
             initializer.onCarpetPartInitialize();
         }
 
-        // Register carpet item tweak
+        // Register carpet and torch item tweak
         UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
             ItemStack stack = player.getStackInHand(hand);
             Item item = stack.getItem();
             if (item instanceof BlockItem) {
                 BlockItem bi = (BlockItem) item;
                 Block block = bi.getBlock();
+                BlockPos pos = hit.getBlockPos().offset(hit.getSide());
+                MultipartContainer.PartOffer offer = null;
                 if (block instanceof CarpetBlock) {
-                    BlockPos pos = hit.getBlockPos().offset(hit.getSide());
+                    if (!(block.getDefaultState().canPlaceAt(world, pos))) {
+                        return ActionResult.PASS;
+                    }
                     boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
                     if (!hasNative && MultipartUtil.get(world, pos) == null) {
                         return ActionResult.PASS; // Revert to default placing
                     }
 
                     DyeColor color = ((CarpetBlock) block).getColor();
-                    MultipartContainer.PartOffer offer = MultipartUtil.offerNewPart(
+                    offer = MultipartUtil.offerNewPart(
                             world, pos,
                             holder -> new CarpetPart(CARPET_PARTS.get(color), holder, color)
                     );
-
-                    if (offer != null) {
-                        if (!world.isClient) {
-                            offer.apply();
-                            if (!player.abilities.creativeMode) {
-                                stack.decrement(1);
-                            }
+                } else if (block == Blocks.TORCH) {
+                    boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
+                    if (!hasNative && MultipartUtil.get(world, pos) == null) {
+                        return ActionResult.PASS; // Revert to default placing
+                    } else if (hit.getSide().getAxis().isHorizontal()) {
+                        ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
+                        BlockState torchState = Blocks.WALL_TORCH.getPlacementState(ctx);
+                        if (torchState == null || !torchState.canPlaceAt(world, pos)) {
+                            return ActionResult.PASS;
                         }
-
-                        BlockSoundGroup sounds = block.getDefaultState().getSoundGroup();
-                        world.playSound(player, pos, sounds.getPlaceSound(), SoundCategory.BLOCKS, (sounds.getVolume() + 1f) / 2f, sounds.getPitch() * 0.8f);
-
-                        return ActionResult.SUCCESS;
+                    } else if (!Blocks.TORCH.getDefaultState().canPlaceAt(world, pos)) {
+                        return ActionResult.PASS;
                     }
+
+                    TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
+                    offer = MultipartUtil.offerNewPart(
+                            world, pos, holder -> new TorchPart(TORCH, holder, facing)
+                    );
+                } else {
+                    return ActionResult.PASS;
+                }
+
+                if (offer != null) {
+                    if (!world.isClient) {
+                        offer.apply();
+                        if (!player.abilities.creativeMode) {
+                            stack.decrement(1);
+                        }
+                    }
+
+                    BlockSoundGroup sounds = block.getDefaultState().getSoundGroup();
+                    world.playSound(player, pos, sounds.getPlaceSound(), SoundCategory.BLOCKS, (sounds.getVolume() + 1f) / 2f, sounds.getPitch() * 0.8f);
+
+                    return ActionResult.SUCCESS;
                 }
             }
 

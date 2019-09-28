@@ -3,7 +3,9 @@
   "package": "juuxel.carpetparts.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CarpetBlockMixin"
+    "CarpetBlockMixin",
+    "TorchBlockMixin",
+    "WallTorchBlockMixin"
   ],
   "client": [
   ],

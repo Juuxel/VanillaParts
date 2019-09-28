@@ -1,16 +1,18 @@
-package juuxel.carpetparts;
+package juuxel.carpetparts.part;
 
 import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
+import juuxel.carpetparts.CarpetParts;
 import juuxel.carpetparts.api.OverlappingPartRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.shape.VoxelShape;
 
-public class CarpetPart extends AbstractPart {
+public class CarpetPart extends VanillaPart {
     private static final VoxelShape SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 1.0D, 16.0D);
     private final DyeColor color;
 
@@ -37,6 +39,11 @@ public class CarpetPart extends AbstractPart {
     @Override
     public boolean canOverlapWith(AbstractPart other) {
         return OverlappingPartRegistry.canOverlapWithCarpets(other.definition);
+    }
+
+    @Override
+    protected BlockState getVanillaState() {
+        return CarpetParts.CARPETS.get(color).getDefaultState();
     }
 
     public static final class ModelKey extends PartModelKey {

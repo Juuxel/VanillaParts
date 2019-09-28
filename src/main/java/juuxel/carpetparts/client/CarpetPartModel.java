@@ -2,7 +2,7 @@ package juuxel.carpetparts.client;
 
 import alexiil.mc.lib.multipart.api.render.PartModelBaker;
 import alexiil.mc.lib.multipart.api.render.PartRenderContext;
-import juuxel.carpetparts.CarpetPart;
+import juuxel.carpetparts.part.CarpetPart;
 import juuxel.carpetparts.CarpetParts;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
