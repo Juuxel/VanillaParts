@@ -4,18 +4,20 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import alexiil.mc.lib.multipart.api.PartDefinition;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import juuxel.carpetparts.api.CarpetPartInitializer;
 import juuxel.carpetparts.part.CarpetPart;
+import juuxel.carpetparts.part.SlabPart;
 import juuxel.carpetparts.part.StatelessPartFactory;
 import juuxel.carpetparts.part.TorchPart;
+import juuxel.carpetparts.util.Util;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.CarpetBlock;
+import net.minecraft.block.*;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.*;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -23,6 +25,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 
@@ -33,6 +36,7 @@ public final class CarpetParts implements ModInitializer {
             id("torch"), TorchPart::new,
             (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
     );
+    public static final BiMap<Block, PartDefinition> SLAB_PARTS = HashBiMap.create();
 
     static {
         ImmutableMap.Builder<DyeColor, PartDefinition> partMapBuilder = ImmutableMap.builder();
@@ -131,6 +135,21 @@ public final class CarpetParts implements ModInitializer {
                     offer = MultipartUtil.offerNewPart(
                             world, pos, holder -> new TorchPart(TORCH, holder, facing)
                     );
+                } else if (block instanceof SlabBlock) {
+                    // TODO: Improve slab stacking
+                    if (!SLAB_PARTS.containsKey(block)) return ActionResult.PASS;
+                    boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
+                    if (!hasNative && MultipartUtil.get(world, pos) == null) {
+                        return ActionResult.PASS; // Revert to default placing
+                    }
+
+                    BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
+                    if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
+                        return ActionResult.PASS;
+
+                    offer = MultipartUtil.offerNewPart(
+                            world, pos, holder -> new SlabPart(SLAB_PARTS.get(block), holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
+                    );
                 } else {
                     return ActionResult.PASS;
                 }
@@ -151,6 +170,18 @@ public final class CarpetParts implements ModInitializer {
             }
 
             return ActionResult.PASS;
+        });
+
+        Util.visitRegistry(Registry.BLOCK, (id, block) -> {
+            if (block instanceof SlabBlock) {
+                PartDefinition def = new PartDefinition(
+                        id(id.getNamespace() + "/" + id.getPath()),
+                        (definition, holder, tag) -> new SlabPart(definition, holder, (SlabBlock) block, tag),
+                        (definition, holder, buf, ctx) -> new SlabPart(definition, holder, (SlabBlock) block, buf.readBoolean())
+                );
+                register(def);
+                SLAB_PARTS.put(block, def);
+            }
         });
     }
 }

@@ -1,0 +1,116 @@
+package juuxel.carpetparts.part;
+
+import alexiil.mc.lib.multipart.api.MultipartEventBus;
+import alexiil.mc.lib.multipart.api.MultipartHolder;
+import alexiil.mc.lib.multipart.api.PartDefinition;
+import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
+import alexiil.mc.lib.multipart.api.event.PartTickEvent;
+import alexiil.mc.lib.multipart.api.property.MultipartProperties;
+import alexiil.mc.lib.multipart.api.render.PartModelKey;
+import alexiil.mc.lib.net.IMsgWriteCtx;
+import alexiil.mc.lib.net.NetByteBuf;
+import com.google.common.collect.ImmutableMap;
+import com.mojang.datafixers.DataFixUtils;
+import net.minecraft.block.*;
+import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.block.enums.SlabType;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
+import net.minecraft.world.World;
+
+import java.util.Locale;
+
+public class SlabPart extends VanillaPart {
+    private static final ImmutableMap<BlockHalf, VoxelShape> SHAPES;
+    private final SlabBlock block;
+    private final BlockHalf half;
+
+    static {
+        SHAPES = ImmutableMap.of(
+                BlockHalf.BOTTOM, Block.createCuboidShape(0, 0, 0, 16, 8, 16),
+                BlockHalf.TOP, Block.createCuboidShape(0, 8, 0, 16, 16, 16)
+        );
+    }
+
+    public SlabPart(PartDefinition definition, MultipartHolder holder, SlabBlock block, BlockHalf half) {
+        super(definition, holder);
+        this.block = block;
+        this.half = half;
+    }
+
+    public SlabPart(PartDefinition definition, MultipartHolder holder, SlabBlock block, CompoundTag tag) {
+        this(definition, holder, block, tag.getBoolean("IsTop"));
+    }
+
+    public SlabPart(PartDefinition definition, MultipartHolder holder, SlabBlock block, boolean top) {
+        super(definition, holder);
+        this.block = block;
+        this.half = top ? BlockHalf.TOP : BlockHalf.BOTTOM;
+    }
+
+    @Override
+    public VoxelShape getShape() {
+        return SHAPES.get(half);
+    }
+
+    @Override
+    public PartModelKey getModelKey() {
+        return new ModelKey(getVanillaState());
+    }
+
+    @Override
+    public ItemStack getPickStack() {
+        return new ItemStack(block);
+    }
+
+    @Override
+    public void onAdded(MultipartEventBus bus) {
+    }
+
+    @Override
+    protected BlockState getVanillaState() {
+        return block.getDefaultState().with(SlabBlock.TYPE, half == BlockHalf.TOP ? SlabType.TOP : SlabType.BOTTOM);
+    }
+
+    @Override
+    public CompoundTag toTag() {
+        return DataFixUtils.make(new CompoundTag(), tag -> {
+            tag.putBoolean("IsTop", half == BlockHalf.TOP);
+        });
+    }
+
+    @Override
+    public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
+        super.writeCreationData(buffer, ctx);
+        buffer.writeBoolean(half == BlockHalf.TOP);
+    }
+
+    public static final class ModelKey extends PartModelKey {
+        private final BlockState state;
+
+        private ModelKey(BlockState state) {
+            this.state = state;
+        }
+
+        public BlockState getState() {
+            return state;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ModelKey modelKey = (ModelKey) o;
+            return state.equals(modelKey.state);
+        }
+
+        @Override
+        public int hashCode() {
+            return state.hashCode();
+        }
+    }
+}
