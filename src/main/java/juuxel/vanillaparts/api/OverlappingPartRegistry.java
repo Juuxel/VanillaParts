@@ -1,4 +1,4 @@
-package juuxel.carpetparts.api;
+package juuxel.vanillaparts.api;
 
 import alexiil.mc.lib.multipart.api.PartDefinition;
 

@@ -1,9 +1,9 @@
-package juuxel.carpetparts.mixin;
+package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
-import juuxel.carpetparts.part.CarpetPart;
-import juuxel.carpetparts.CarpetParts;
+import juuxel.vanillaparts.part.CarpetPart;
+import juuxel.vanillaparts.VanillaParts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.util.DyeColor;
@@ -23,6 +23,6 @@ public abstract class CarpetBlockMixin implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         DyeColor color = getColor();
-        return Collections.singletonList(holder -> new CarpetPart(CarpetParts.CARPET_PARTS.get(color), holder, color));
+        return Collections.singletonList(holder -> new CarpetPart(VanillaParts.CARPET_PARTS.get(color), holder, color));
     }
 }

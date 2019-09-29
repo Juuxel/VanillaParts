@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "juuxel.carpetparts.mixin",
+  "package": "juuxel.vanillaparts.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CarpetBlockMixin",

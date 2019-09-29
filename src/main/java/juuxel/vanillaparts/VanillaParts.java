@@ -1,4 +1,4 @@
-package juuxel.carpetparts;
+package juuxel.vanillaparts;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
@@ -7,12 +7,12 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import juuxel.carpetparts.api.CarpetPartInitializer;
-import juuxel.carpetparts.part.CarpetPart;
-import juuxel.carpetparts.part.SlabPart;
-import juuxel.carpetparts.part.StatelessPartFactory;
-import juuxel.carpetparts.part.TorchPart;
-import juuxel.carpetparts.util.Util;
+import juuxel.vanillaparts.api.VanillaPartsInitializer;
+import juuxel.vanillaparts.part.CarpetPart;
+import juuxel.vanillaparts.part.SlabPart;
+import juuxel.vanillaparts.part.StatelessPartFactory;
+import juuxel.vanillaparts.part.TorchPart;
+import juuxel.vanillaparts.util.Util;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
@@ -29,7 +29,7 @@ import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 
-public final class CarpetParts implements ModInitializer {
+public final class VanillaParts implements ModInitializer {
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
     public static final ImmutableMap<DyeColor, Block> CARPETS;
     public static final PartDefinition TORCH = new PartDefinition(
@@ -71,7 +71,7 @@ public final class CarpetParts implements ModInitializer {
     }
 
     public static Identifier id(String path) {
-        return new Identifier("carpet_parts", path);
+        return new Identifier("vanilla_parts", path);
     }
 
     private static void register(PartDefinition def) {
@@ -86,11 +86,11 @@ public final class CarpetParts implements ModInitializer {
         }
         register(TORCH);
 
-        // Load carpet part initializers
-        List<CarpetPartInitializer> initializers = FabricLoader.getInstance()
-                .getEntrypoints("carpet_parts", CarpetPartInitializer.class);
+        // Load VP initializers
+        List<VanillaPartsInitializer> initializers = FabricLoader.getInstance()
+                .getEntrypoints("vanilla_parts", VanillaPartsInitializer.class);
 
-        for (CarpetPartInitializer initializer : initializers) {
+        for (VanillaPartsInitializer initializer : initializers) {
             initializer.onCarpetPartInitialize();
         }
 

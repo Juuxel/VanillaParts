@@ -1,11 +1,8 @@
-package juuxel.carpetparts.part;
+package juuxel.vanillaparts.part;
 
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
-import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
-import alexiil.mc.lib.multipart.api.event.PartTickEvent;
-import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
@@ -16,13 +13,7 @@ import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.World;
-
-import java.util.Locale;
 
 public class SlabPart extends VanillaPart {
     private static final ImmutableMap<BlockHalf, VoxelShape> SHAPES;

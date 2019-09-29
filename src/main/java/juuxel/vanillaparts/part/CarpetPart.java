@@ -1,11 +1,11 @@
-package juuxel.carpetparts.part;
+package juuxel.vanillaparts.part;
 
 import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.carpetparts.CarpetParts;
-import juuxel.carpetparts.api.OverlappingPartRegistry;
+import juuxel.vanillaparts.VanillaParts;
+import juuxel.vanillaparts.api.OverlappingPartRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -33,7 +33,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public ItemStack getPickStack() {
-        return new ItemStack(CarpetParts.CARPETS.get(color));
+        return new ItemStack(VanillaParts.CARPETS.get(color));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     protected BlockState getVanillaState() {
-        return CarpetParts.CARPETS.get(color).getDefaultState();
+        return VanillaParts.CARPETS.get(color).getDefaultState();
     }
 
     public static final class ModelKey extends PartModelKey {

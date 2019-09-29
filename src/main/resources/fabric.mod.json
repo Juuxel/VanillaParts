@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "carpet_parts",
+  "id": "vanilla_parts",
   "version": "$version",
 
-  "name": "Carpet Parts",
+  "name": "Vanilla Parts",
   "description": "This is an example description! Tell everyone what your mod is about!",
   "authors": [
     "Juuz"
   ],
   "contact": {
-    "homepage": "https://github.com/Juuxel/CarpetParts",
-    "sources": "https://github.com/Juuxel/CarpetParts"
+    "homepage": "https://github.com/Juuxel/VanillaParts",
+    "sources": "https://github.com/Juuxel/VanillaParts"
   },
 
   "license": "LGPL-3.0-only",
@@ -19,14 +19,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "juuxel.carpetparts.CarpetParts"
+      "juuxel.vanillaparts.VanillaParts"
     ],
     "client": [
-      "juuxel.carpetparts.client.CarpetPartsClient"
+      "juuxel.vanillaparts.client.VanillaPartsClient"
     ]
   },
   "mixins": [
-    "mixins.carpet_parts.json"
+    "mixins.vanilla_parts.json"
   ],
 
   "depends": {

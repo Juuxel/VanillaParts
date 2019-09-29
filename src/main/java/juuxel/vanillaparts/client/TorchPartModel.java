@@ -1,8 +1,8 @@
-package juuxel.carpetparts.client;
+package juuxel.vanillaparts.client;
 
 import alexiil.mc.lib.multipart.api.render.PartModelBaker;
 import alexiil.mc.lib.multipart.api.render.PartRenderContext;
-import juuxel.carpetparts.part.TorchPart;
+import juuxel.vanillaparts.part.TorchPart;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
