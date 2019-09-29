@@ -1,6 +1,7 @@
 package juuxel.vanillaparts;
 
 import alexiil.mc.lib.multipart.api.*;
+import juuxel.vanillaparts.block.VBlocks;
 import juuxel.vanillaparts.part.*;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.*;
@@ -38,6 +39,8 @@ enum MultipartItemTweak implements UseBlockCallback {
                 offer = handleCarpets(world, pos, block);
             } else if (block == Blocks.TORCH) {
                 offer = handleTorches(player, world, hand, hit, pos);
+            } else if (block == VBlocks.CRAFTING_SLAB) {
+                offer = handleCraftingSlabs(player, world, hand, hit, pos, block);
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
             } else if (block == Blocks.LEVER) {
@@ -112,6 +115,16 @@ enum MultipartItemTweak implements UseBlockCallback {
         );
     }
 
+    private MultipartContainer.PartOffer handleCraftingSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
+        // TODO: Improve slab stacking
+        BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
+        if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
+            return null;
+
+        return MultipartUtil.offerNewPart(
+                world, pos, holder -> new CraftingSlabPart(VPartDefinitions.CRAFTING_SLAB, holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
+        );
+    }
 
     private MultipartContainer.PartOffer handleWallMounted(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, WallMountedPartFactory factory) {
         ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));

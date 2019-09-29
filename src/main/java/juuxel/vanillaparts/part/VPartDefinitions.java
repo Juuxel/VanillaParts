@@ -3,6 +3,7 @@ package juuxel.vanillaparts.part;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.VanillaParts;
+import juuxel.vanillaparts.block.VBlocks;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
@@ -32,6 +33,11 @@ public final class VPartDefinitions {
             VanillaParts.id("lever"), LeverPart::new,
             ((definition, holder, buffer, ctx) -> new LeverPart(definition, holder, buffer))
     );
+    public static final PartDefinition CRAFTING_SLAB = new PartDefinition(
+            VanillaParts.id("crafting_slab"),
+            (definition, holder, nbt) -> new CraftingSlabPart(definition, holder, VBlocks.CRAFTING_SLAB, nbt),
+            (definition, holder, buf, ctx) -> new CraftingSlabPart(definition, holder, VBlocks.CRAFTING_SLAB, buf.readBoolean())
+    );
 
     private VPartDefinitions() {}
 
@@ -46,10 +52,11 @@ public final class VPartDefinitions {
         }
         register(TORCH);
         register(LEVER);
+        register(CRAFTING_SLAB);
 
         // Add slab and button parts
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {
-            if (block instanceof SlabBlock) {
+            if (block instanceof SlabBlock && block != VBlocks.CRAFTING_SLAB) {
                 PartDefinition def = new PartDefinition(
                         VanillaParts.id(id.getNamespace() + "/" + id.getPath()),
                         (definition, holder, tag) -> new SlabPart(definition, holder, (SlabBlock) block, tag),

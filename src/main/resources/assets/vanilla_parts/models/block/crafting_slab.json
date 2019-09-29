@@ -1,0 +1,24 @@
+{
+  "parent": "block/block",
+  "textures": {
+    "top": "block/crafting_table_top",
+    "bottom": "block/oak_planks",
+    "side": "block/crafting_table_side",
+    "front": "block/crafting_table_front",
+    "particle": "block/crafting_table_side"
+  },
+  "elements": [
+    {
+      "from": [0, 0, 0],
+      "to": [16, 8, 16],
+      "faces": {
+        "down": { "texture": "#bottom", "cullface": "down" },
+        "up": { "texture": "#top" },
+        "north": { "texture": "#front", "cullface": "north" },
+        "south": { "texture": "#front", "cullface": "south" },
+        "west": { "texture": "#side", "cullface": "west" },
+        "east": { "texture": "#side", "cullface": "east" }
+      }
+    }
+  ]
+}

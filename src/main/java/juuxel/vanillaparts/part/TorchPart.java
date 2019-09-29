@@ -11,6 +11,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -82,7 +83,7 @@ public class TorchPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new ModelKey(facing);
+        return new StaticVanillaModelKey(getVanillaState());
     }
 
     @Override
@@ -154,31 +155,6 @@ public class TorchPart extends VanillaPart {
                 default:
                     return Facing.GROUND;
             }
-        }
-    }
-
-    public static final class ModelKey extends PartModelKey {
-        private final Facing facing;
-
-        private ModelKey(Facing facing) {
-            this.facing = facing;
-        }
-
-        public Facing getFacing() {
-            return facing;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ModelKey modelKey = (ModelKey) o;
-            return facing == modelKey.facing;
-        }
-
-        @Override
-        public int hashCode() {
-            return facing.hashCode();
         }
     }
 }

@@ -4,8 +4,8 @@ import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.vanillaparts.VanillaParts;
 import juuxel.vanillaparts.api.OverlappingPartRegistry;
+import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
@@ -28,7 +28,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new ModelKey(color);
+        return new StaticVanillaModelKey(getVanillaState());
     }
 
     @Override
@@ -44,30 +44,5 @@ public class CarpetPart extends VanillaPart {
     @Override
     public BlockState getVanillaState() {
         return VPartDefinitions.CARPETS.get(color).getDefaultState();
-    }
-
-    public static final class ModelKey extends PartModelKey {
-        private final DyeColor color;
-
-        private ModelKey(DyeColor color) {
-            this.color = color;
-        }
-
-        public DyeColor getColor() {
-            return color;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ModelKey modelKey = (ModelKey) o;
-            return color == modelKey.color;
-        }
-
-        @Override
-        public int hashCode() {
-            return color.hashCode();
-        }
     }
 }
