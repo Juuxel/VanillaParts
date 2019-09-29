@@ -41,9 +41,9 @@ enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
             } else if (block == Blocks.LEVER) {
-                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VanillaParts.LEVER, holder, face, facing, false));
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VPartDefinitions.LEVER, holder, face, facing, false));
             } else if (block instanceof AbstractButtonBlock) {
-                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VanillaParts.BUTTON_PARTS.get(block), holder, block, face, facing));
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else {
                 return ActionResult.PASS;
             }
@@ -78,7 +78,7 @@ enum MultipartItemTweak implements UseBlockCallback {
         DyeColor color = ((CarpetBlock) block).getColor();
         return MultipartUtil.offerNewPart(
                 world, pos,
-                holder -> new CarpetPart(VanillaParts.CARPET_PARTS.get(color), holder, color)
+                holder -> new CarpetPart(VPartDefinitions.CARPET_PARTS.get(color), holder, color)
         );
     }
 
@@ -95,20 +95,20 @@ enum MultipartItemTweak implements UseBlockCallback {
 
         TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
         return MultipartUtil.offerNewPart(
-                world, pos, holder -> new TorchPart(VanillaParts.TORCH, holder, facing)
+                world, pos, holder -> new TorchPart(VPartDefinitions.TORCH, holder, facing)
         );
     }
 
     private MultipartContainer.PartOffer handleSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
         // TODO: Improve slab stacking
-        if (!VanillaParts.SLAB_PARTS.containsKey(block)) return null;
+        if (!VPartDefinitions.SLAB_PARTS.containsKey(block)) return null;
 
         BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
         if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
             return null;
 
         return MultipartUtil.offerNewPart(
-                world, pos, holder -> new SlabPart(VanillaParts.SLAB_PARTS.get(block), holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
+                world, pos, holder -> new SlabPart(VPartDefinitions.SLAB_PARTS.get(block), holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
         );
     }
 

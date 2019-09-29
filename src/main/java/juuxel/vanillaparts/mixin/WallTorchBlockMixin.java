@@ -1,8 +1,8 @@
 package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
-import juuxel.vanillaparts.VanillaParts;
 import juuxel.vanillaparts.part.TorchPart;
+import juuxel.vanillaparts.part.VPartDefinitions;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.HorizontalFacingBlock;
@@ -18,6 +18,6 @@ import java.util.List;
 public class WallTorchBlockMixin extends TorchBlockMixin {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
-        return (Object) this == Blocks.WALL_TORCH ? Collections.singletonList(holder -> new TorchPart(VanillaParts.TORCH, holder, TorchPart.Facing.of(state.get(HorizontalFacingBlock.FACING)))) : null;
+        return (Object) this == Blocks.WALL_TORCH ? Collections.singletonList(holder -> new TorchPart(VPartDefinitions.TORCH, holder, TorchPart.Facing.of(state.get(HorizontalFacingBlock.FACING)))) : null;
     }
 }

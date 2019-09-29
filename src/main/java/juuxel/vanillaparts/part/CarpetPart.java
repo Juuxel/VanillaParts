@@ -33,7 +33,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public ItemStack getPickStack() {
-        return new ItemStack(VanillaParts.CARPETS.get(color));
+        return new ItemStack(VPartDefinitions.CARPETS.get(color));
     }
 
     @Override
@@ -43,7 +43,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public BlockState getVanillaState() {
-        return VanillaParts.CARPETS.get(color).getDefaultState();
+        return VPartDefinitions.CARPETS.get(color).getDefaultState();
     }
 
     public static final class ModelKey extends PartModelKey {
