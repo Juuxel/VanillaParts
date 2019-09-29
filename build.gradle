@@ -32,6 +32,8 @@ dependencies {
     include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
 
     modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
+
+    compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }
 
 processResources {
