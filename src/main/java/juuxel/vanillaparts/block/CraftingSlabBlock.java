@@ -19,6 +19,7 @@ import net.minecraft.world.World;
 import java.util.Collections;
 import java.util.List;
 
+// TODO: These don't double even with the tweak
 public class CraftingSlabBlock extends SlabBlock implements NativeMultipart {
     public CraftingSlabBlock(Settings settings) {
         super(settings);

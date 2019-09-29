@@ -19,6 +19,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.function.BiFunction;
+
 enum MultipartItemTweak implements UseBlockCallback {
     INSTANCE;
 
@@ -32,7 +34,7 @@ enum MultipartItemTweak implements UseBlockCallback {
             BlockPos pos = hit.getBlockPos().offset(hit.getSide());
             MultipartContainer.PartOffer offer = null;
 
-            if (isMissingContainer(world, pos))
+            if (isMissingContainer(world, pos) && !(block instanceof SlabBlock)) // slabs do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement
 
             if (block instanceof CarpetBlock) {
@@ -105,25 +107,40 @@ enum MultipartItemTweak implements UseBlockCallback {
     private MultipartContainer.PartOffer handleSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
         // TODO: Improve slab stacking
         if (!VPartDefinitions.SLAB_PARTS.containsKey(block)) return null;
-
-        BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
-        if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
-            return null;
-
-        return MultipartUtil.offerNewPart(
-                world, pos, holder -> new SlabPart(VPartDefinitions.SLAB_PARTS.get(block), holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
-        );
+        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VPartDefinitions.SLAB_PARTS.get(block), holder, (SlabBlock) block, top));
     }
 
     private MultipartContainer.PartOffer handleCraftingSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
-        // TODO: Improve slab stacking
-        BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
-        if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
-            return null;
+        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new CraftingSlabPart(VPartDefinitions.CRAFTING_SLAB, holder, (SlabBlock) block, top));
+    }
 
-        return MultipartUtil.offerNewPart(
-                world, pos, holder -> new CraftingSlabPart(VPartDefinitions.CRAFTING_SLAB, holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
-        );
+    private MultipartContainer.PartOffer handleAnySlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, BiFunction<MultipartHolder, Boolean, AbstractPart> factory) {
+        BlockState hitState = world.getBlockState(hit.getBlockPos());
+        if (block == hitState.getBlock() && hit.getSide().getAxis().isVertical()) {
+            Direction side = hit.getSide();
+            if (side == Direction.UP && hitState.get(SlabBlock.TYPE) == SlabType.BOTTOM) return null;
+            if (side == Direction.DOWN && hitState.get(SlabBlock.TYPE) == SlabType.TOP) return null;
+        }
+
+        BlockPos originalPos = pos.offset(hit.getSide().getOpposite());
+        MultipartContainer.PartOffer offer = null;
+        if (!isMissingContainer(world, originalPos) && hit.getSide().getAxis().isVertical()) {
+            offer = MultipartUtil.offerNewPart(
+                    world, originalPos, holder -> factory.apply(holder, hit.getSide() == Direction.UP)
+            );
+        }
+
+        if (offer == null && !isMissingContainer(world, pos)) {
+            BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
+            if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
+                return null;
+
+            offer = MultipartUtil.offerNewPart(
+                    world, pos, holder -> factory.apply(holder, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
+            );
+        }
+
+        return offer;
     }
 
     private MultipartContainer.PartOffer handleWallMounted(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, WallMountedPartFactory factory) {
