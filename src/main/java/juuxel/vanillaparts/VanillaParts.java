@@ -1,8 +1,6 @@
 package juuxel.vanillaparts;
 
 import alexiil.mc.lib.multipart.api.PartDefinition;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.api.VanillaPartsInitializer;
 import juuxel.vanillaparts.part.*;
@@ -10,6 +8,7 @@ import juuxel.vanillaparts.util.Util;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SlabBlock;
@@ -17,7 +16,9 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public final class VanillaParts implements ModInitializer {
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
@@ -26,7 +27,8 @@ public final class VanillaParts implements ModInitializer {
             id("torch"), TorchPart::new,
             (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
     );
-    public static final BiMap<Block, PartDefinition> SLAB_PARTS = HashBiMap.create();
+    public static final Map<Block, PartDefinition> SLAB_PARTS = new HashMap<>();
+    public static final Map<Block, PartDefinition> BUTTON_PARTS = new HashMap<>();
     public static final PartDefinition LEVER = new PartDefinition(
             id("lever"), LeverPart::new,
             ((definition, holder, buffer, ctx) -> new LeverPart(definition, holder, buffer))
@@ -101,6 +103,14 @@ public final class VanillaParts implements ModInitializer {
                 );
                 register(def);
                 SLAB_PARTS.put(block, def);
+            } else if (block instanceof AbstractButtonBlock) {
+                PartDefinition def = new PartDefinition(
+                        id(id.getNamespace() + "/" + id.getPath()),
+                        (definition, holder, tag) -> new ButtonPart(definition, holder, block, tag),
+                        (definition, holder, buf, ctx) -> new ButtonPart(definition, holder, block, buf)
+                );
+                register(def);
+                BUTTON_PARTS.put(block, def);
             }
         });
     }

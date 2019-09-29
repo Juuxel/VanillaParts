@@ -1,12 +1,7 @@
 package juuxel.vanillaparts;
 
-import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.MultipartUtil;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
-import juuxel.vanillaparts.part.CarpetPart;
-import juuxel.vanillaparts.part.LeverPart;
-import juuxel.vanillaparts.part.SlabPart;
-import juuxel.vanillaparts.part.TorchPart;
+import alexiil.mc.lib.multipart.api.*;
+import juuxel.vanillaparts.part.*;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.SlabType;
@@ -46,7 +41,9 @@ enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
             } else if (block == Blocks.LEVER) {
-                offer = handleLevers(player, world, hand, hit, pos, block);
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VanillaParts.LEVER, holder, face, facing, false));
+            } else if (block instanceof AbstractButtonBlock) {
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VanillaParts.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else {
                 return ActionResult.PASS;
             }
@@ -116,7 +113,7 @@ enum MultipartItemTweak implements UseBlockCallback {
     }
 
 
-    private MultipartContainer.PartOffer handleLevers(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
+    private MultipartContainer.PartOffer handleWallMounted(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, WallMountedPartFactory factory) {
         ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
         Direction[] directions = ctx.getPlacementDirections();
         for (Direction direction : directions) {
@@ -134,16 +131,20 @@ enum MultipartItemTweak implements UseBlockCallback {
             if (vanillaState.canPlaceAt(world, pos)) {
                 return MultipartUtil.offerNewPart(
                         world, pos,
-                        holder -> new LeverPart(
-                                VanillaParts.LEVER, holder,
+                        holder -> factory.create(
+                                holder,
                                 vanillaState.get(LeverBlock.FACE),
-                                vanillaState.get(LeverBlock.FACING),
-                                false
+                                vanillaState.get(LeverBlock.FACING)
                         )
                 );
             }
         }
 
         return null;
+    }
+
+    @FunctionalInterface
+    private interface WallMountedPartFactory {
+        AbstractPart create(MultipartHolder holder, WallMountLocation face, Direction facing);
     }
 }

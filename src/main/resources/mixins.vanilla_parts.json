@@ -3,6 +3,8 @@
   "package": "juuxel.vanillaparts.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AbstractButtonBlockAccessor",
+    "AbstractButtonBlockMixin",
     "CarpetBlockMixin",
     "LeverBlockAccessor",
     "LeverBlockMixin",
