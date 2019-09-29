@@ -16,4 +16,8 @@ public final class Util {
 
         RegistryEntryAddedCallback.event(registry).register(((rawId, id, object) -> consumer.accept(id, object)));
     }
+
+    public static <T> T safeGet(T[] ts, int index) {
+        return ts[Math.abs(index % ts.length)];
+    }
 }

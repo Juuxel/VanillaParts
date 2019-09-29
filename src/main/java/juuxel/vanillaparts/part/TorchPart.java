@@ -105,7 +105,7 @@ public class TorchPart extends VanillaPart {
     }
 
     @Override
-    protected BlockState getVanillaState() {
+    public BlockState getVanillaState() {
         return facing == Facing.GROUND ? Blocks.TORCH.getDefaultState() : Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.FACING, facing.getDirection());
     }
 

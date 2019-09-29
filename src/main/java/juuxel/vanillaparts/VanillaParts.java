@@ -1,30 +1,20 @@
 package juuxel.vanillaparts;
 
-import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.MultipartUtil;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.api.VanillaPartsInitializer;
-import juuxel.vanillaparts.part.CarpetPart;
-import juuxel.vanillaparts.part.SlabPart;
-import juuxel.vanillaparts.part.StatelessPartFactory;
-import juuxel.vanillaparts.part.TorchPart;
+import juuxel.vanillaparts.part.*;
 import juuxel.vanillaparts.util.Util;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.*;
-import net.minecraft.block.enums.SlabType;
-import net.minecraft.item.*;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.ActionResult;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
 import java.util.List;
@@ -37,6 +27,10 @@ public final class VanillaParts implements ModInitializer {
             (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
     );
     public static final BiMap<Block, PartDefinition> SLAB_PARTS = HashBiMap.create();
+    public static final PartDefinition LEVER = new PartDefinition(
+            id("lever"), LeverPart::new,
+            ((definition, holder, buffer, ctx) -> new LeverPart(definition, holder, buffer))
+    );
 
     static {
         ImmutableMap.Builder<DyeColor, PartDefinition> partMapBuilder = ImmutableMap.builder();
@@ -80,11 +74,12 @@ public final class VanillaParts implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Register carpet parts
+        // Register parts
         for (PartDefinition def : CARPET_PARTS.values()) {
             register(def);
         }
         register(TORCH);
+        register(LEVER);
 
         // Load VP initializers
         List<VanillaPartsInitializer> initializers = FabricLoader.getInstance()
@@ -95,82 +90,7 @@ public final class VanillaParts implements ModInitializer {
         }
 
         // Register carpet and torch item tweak
-        UseBlockCallback.EVENT.register((player, world, hand, hit) -> {
-            ItemStack stack = player.getStackInHand(hand);
-            Item item = stack.getItem();
-            if (item instanceof BlockItem) {
-                BlockItem bi = (BlockItem) item;
-                Block block = bi.getBlock();
-                BlockPos pos = hit.getBlockPos().offset(hit.getSide());
-                MultipartContainer.PartOffer offer = null;
-                if (block instanceof CarpetBlock) {
-                    if (!(block.getDefaultState().canPlaceAt(world, pos))) {
-                        return ActionResult.PASS;
-                    }
-                    boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
-                    if (!hasNative && MultipartUtil.get(world, pos) == null) {
-                        return ActionResult.PASS; // Revert to default placing
-                    }
-
-                    DyeColor color = ((CarpetBlock) block).getColor();
-                    offer = MultipartUtil.offerNewPart(
-                            world, pos,
-                            holder -> new CarpetPart(CARPET_PARTS.get(color), holder, color)
-                    );
-                } else if (block == Blocks.TORCH) {
-                    boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
-                    if (!hasNative && MultipartUtil.get(world, pos) == null) {
-                        return ActionResult.PASS; // Revert to default placing
-                    } else if (hit.getSide().getAxis().isHorizontal()) {
-                        ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-                        BlockState torchState = Blocks.WALL_TORCH.getPlacementState(ctx);
-                        if (torchState == null || !torchState.canPlaceAt(world, pos)) {
-                            return ActionResult.PASS;
-                        }
-                    } else if (!Blocks.TORCH.getDefaultState().canPlaceAt(world, pos)) {
-                        return ActionResult.PASS;
-                    }
-
-                    TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
-                    offer = MultipartUtil.offerNewPart(
-                            world, pos, holder -> new TorchPart(TORCH, holder, facing)
-                    );
-                } else if (block instanceof SlabBlock) {
-                    // TODO: Improve slab stacking
-                    if (!SLAB_PARTS.containsKey(block)) return ActionResult.PASS;
-                    boolean hasNative = world.getBlockState(pos).getBlock() instanceof NativeMultipart;
-                    if (!hasNative && MultipartUtil.get(world, pos) == null) {
-                        return ActionResult.PASS; // Revert to default placing
-                    }
-
-                    BlockState placementState = block.getPlacementState(new ItemPlacementContext(new ItemUsageContext(player, hand, hit)));
-                    if (placementState == null || placementState.get(SlabBlock.TYPE) == SlabType.DOUBLE)
-                        return ActionResult.PASS;
-
-                    offer = MultipartUtil.offerNewPart(
-                            world, pos, holder -> new SlabPart(SLAB_PARTS.get(block), holder, (SlabBlock) block, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
-                    );
-                } else {
-                    return ActionResult.PASS;
-                }
-
-                if (offer != null) {
-                    if (!world.isClient) {
-                        offer.apply();
-                        if (!player.abilities.creativeMode) {
-                            stack.decrement(1);
-                        }
-                    }
-
-                    BlockSoundGroup sounds = block.getDefaultState().getSoundGroup();
-                    world.playSound(player, pos, sounds.getPlaceSound(), SoundCategory.BLOCKS, (sounds.getVolume() + 1f) / 2f, sounds.getPitch() * 0.8f);
-
-                    return ActionResult.SUCCESS;
-                }
-            }
-
-            return ActionResult.PASS;
-        });
+        UseBlockCallback.EVENT.register(MultipartItemTweak.INSTANCE);
 
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {
             if (block instanceof SlabBlock) {

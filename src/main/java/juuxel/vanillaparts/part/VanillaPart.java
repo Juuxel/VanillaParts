@@ -15,7 +15,7 @@ public abstract class VanillaPart extends AbstractPart {
         super(definition, holder);
     }
 
-    protected abstract BlockState getVanillaState();
+    public abstract BlockState getVanillaState();
 
     protected final World getWorld() {
         return this.holder.getContainer().getMultipartWorld();

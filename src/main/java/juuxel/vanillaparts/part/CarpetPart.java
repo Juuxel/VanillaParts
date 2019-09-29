@@ -42,7 +42,7 @@ public class CarpetPart extends VanillaPart {
     }
 
     @Override
-    protected BlockState getVanillaState() {
+    public BlockState getVanillaState() {
         return VanillaParts.CARPETS.get(color).getDefaultState();
     }
 

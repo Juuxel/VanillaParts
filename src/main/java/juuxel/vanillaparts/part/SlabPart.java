@@ -8,6 +8,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
@@ -50,7 +51,7 @@ public class SlabPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new ModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getVanillaState());
     }
 
     @Override
@@ -63,7 +64,7 @@ public class SlabPart extends VanillaPart {
     }
 
     @Override
-    protected BlockState getVanillaState() {
+    public BlockState getVanillaState() {
         return block.getDefaultState().with(SlabBlock.TYPE, half == BlockHalf.TOP ? SlabType.TOP : SlabType.BOTTOM);
     }
 
@@ -78,30 +79,5 @@ public class SlabPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeBoolean(half == BlockHalf.TOP);
-    }
-
-    public static final class ModelKey extends PartModelKey {
-        private final BlockState state;
-
-        private ModelKey(BlockState state) {
-            this.state = state;
-        }
-
-        public BlockState getState() {
-            return state;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ModelKey modelKey = (ModelKey) o;
-            return state.equals(modelKey.state);
-        }
-
-        @Override
-        public int hashCode() {
-            return state.hashCode();
-        }
     }
 }
