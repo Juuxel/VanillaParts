@@ -47,4 +47,9 @@ public abstract class VanillaPart extends AbstractPart {
             }
         });
     }
+
+    @Override
+    public ItemStack getPickStack() {
+        return new ItemStack(getVanillaState().getBlock());
+    }
 }

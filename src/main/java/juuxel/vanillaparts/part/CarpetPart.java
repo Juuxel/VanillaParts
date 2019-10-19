@@ -8,7 +8,6 @@ import juuxel.vanillaparts.api.OverlappingPartRegistry;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.shape.VoxelShape;
 
@@ -29,11 +28,6 @@ public class CarpetPart extends VanillaPart {
     @Override
     public PartModelKey getModelKey() {
         return new StaticVanillaModelKey(getVanillaState());
-    }
-
-    @Override
-    public ItemStack getPickStack() {
-        return new ItemStack(VPartDefinitions.CARPETS.get(color));
     }
 
     @Override
