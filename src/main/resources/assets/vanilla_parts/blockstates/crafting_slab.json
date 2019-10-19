@@ -1,7 +1,0 @@
-{
-  "variants": {
-    "type=bottom": { "model": "vanilla_parts:block/crafting_slab" },
-    "type=top": { "model": "vanilla_parts:block/crafting_slab_top" },
-    "type=double": { "model": "block/crafting_table" }
-  }
-}

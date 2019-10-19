@@ -1,7 +1,6 @@
 package juuxel.vanillaparts;
 
 import juuxel.vanillaparts.api.VanillaPartsInitializer;
-import juuxel.vanillaparts.block.VBlocks;
 import juuxel.vanillaparts.part.VPartDefinitions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -18,7 +17,6 @@ public final class VanillaParts implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        VBlocks.init();
         VPartDefinitions.init();
 
         // Load VP initializers

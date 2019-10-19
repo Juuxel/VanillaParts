@@ -6,7 +6,6 @@
     "AbstractButtonBlockAccessor",
     "AbstractButtonBlockMixin",
     "CarpetBlockMixin",
-    "CraftingTableContainerMixin",
     "LeverBlockAccessor",
     "LeverBlockMixin",
     "SlabBlockMixin",
