@@ -64,7 +64,7 @@ public class LeverPart extends WallMountedRedstonePart {
     @Override
     public boolean onActivate(PlayerEntity player, Hand hand, BlockHitResult hit) {
         powered = !powered;
-        updateRedstoneLevels(powered ? 15 : 0);
+        updateRedstoneLevels();
         if (player.world.isClient) {
             if (powered) {
                 LeverBlockAccessor.callSpawnParticles(getVanillaState(), player.world, hit.getBlockPos(), 1f);
@@ -80,7 +80,7 @@ public class LeverPart extends WallMountedRedstonePart {
     @Override
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
-        updateRedstoneLevels(0);
+        updateRedstoneLevels();
         MultipartPropertyContainer props = this.holder.getContainer().getProperties();
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
     }

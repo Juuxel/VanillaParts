@@ -3,15 +3,14 @@ package juuxel.vanillaparts.part;
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
+import alexiil.mc.lib.multipart.api.event.PartEventEntityCollide;
 import alexiil.mc.lib.multipart.api.event.PartTickEvent;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
-import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
 import juuxel.vanillaparts.mixin.AbstractButtonBlockAccessor;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.WallMountLocation;
@@ -19,18 +18,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.world.EmptyBlockView;
 
 import java.util.List;
 
-// TODO: Levers power blocks through other parts
+// TODO: Buttons power blocks through other parts
 public class ButtonPart extends WallMountedRedstonePart {
     private final Block block;
     private final AbstractButtonBlockAccessor buttonBlock;
@@ -82,27 +76,33 @@ public class ButtonPart extends WallMountedRedstonePart {
             timer--;
         }
 
-        if (buttonBlock.isWooden() && (!powered || timer <= 0)) {
-            List<? extends Entity> entities = getWorld().getEntities(ProjectileEntity.class, getShape().getBoundingBox().offset(getPos()));
-            boolean hasEntities = !entities.isEmpty();
-            if (hasEntities != powered) {
-                powered = hasEntities;
+        if (powered && timer <= 0) {
+            if (buttonBlock.isWooden()) {
+                tickWooden();
+            } else {
+                powered = false;
                 if (!getWorld().isClient) {
-                    updateRedstoneLevels(powered ? 15 : 0);
-                    buttonBlock.callPlayClickSound(null, getWorld(), getPos(), hasEntities);
+                    updateRedstoneLevels();
+                    buttonBlock.callPlayClickSound(null, getWorld(), getPos(), false);
                 }
                 updateListeners();
-                if (powered) {
-                    timer = block.getTickRate(getWorld());
-                }
             }
-        } else if (timer <= 0 && powered) {
-            powered = false;
+        }
+    }
+
+    private void tickWooden() {
+        List<? extends Entity> entities = getWorld().getEntities(ProjectileEntity.class, getShape().getBoundingBox().offset(getPos()));
+        boolean hasEntities = !entities.isEmpty();
+        if (hasEntities != powered) {
+            powered = hasEntities;
             if (!getWorld().isClient) {
-                updateRedstoneLevels(0);
-                buttonBlock.callPlayClickSound(null, getWorld(), getPos(), false);
+                updateRedstoneLevels();
+                buttonBlock.callPlayClickSound(null, getWorld(), getPos(), hasEntities);
             }
             updateListeners();
+            if (powered) {
+                timer = block.getTickRate(getWorld());
+            }
         }
     }
 
@@ -112,7 +112,7 @@ public class ButtonPart extends WallMountedRedstonePart {
             timer = block.getTickRate(player.world);
             powered = true;
             if (!player.world.isClient) {
-                updateRedstoneLevels(15);
+                updateRedstoneLevels();
             }
             buttonBlock.callPlayClickSound(player, player.world, hit.getBlockPos(), true);
             updateListeners();
@@ -123,10 +123,11 @@ public class ButtonPart extends WallMountedRedstonePart {
     @Override
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
-        updateRedstoneLevels(0);
+        updateRedstoneLevels();
         MultipartPropertyContainer props = this.holder.getContainer().getProperties();
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
         bus.addContextlessListener(this, PartTickEvent.class, this::tick);
+        bus.addListener(this, PartEventEntityCollide.class, event -> tickWooden());
     }
 
     private static WallMountLocation readFace(int i) {

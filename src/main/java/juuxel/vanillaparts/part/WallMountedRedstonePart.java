@@ -58,7 +58,8 @@ public abstract class WallMountedRedstonePart extends VanillaPart {
         }
     }
 
-    protected void updateRedstoneLevels(int power) {
+    protected void updateRedstoneLevels() {
+        int power = powered ? 15 : 0;
         MultipartPropertyContainer props = this.holder.getContainer().getProperties();
         Direction actualFacing = getActualFacing();
         props.setValue(this, MultipartProperties.getStrongRedstonePower(actualFacing), power);

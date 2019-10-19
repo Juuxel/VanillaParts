@@ -102,7 +102,6 @@ enum MultipartItemTweak implements UseBlockCallback {
     }
 
     private MultipartContainer.PartOffer handleSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
-        // TODO: Improve slab stacking
         if (!VPartDefinitions.SLAB_PARTS.containsKey(block)) return null;
         return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VPartDefinitions.SLAB_PARTS.get(block), holder, (SlabBlock) block, top));
     }
