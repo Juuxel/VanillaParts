@@ -1,10 +1,8 @@
 package juuxel.vanillaparts.part;
 
-import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.vanillaparts.api.OverlappingPartRegistry;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,10 +28,10 @@ public class CarpetPart extends VanillaPart {
         return new StaticVanillaModelKey(getVanillaState());
     }
 
-    @Override
+    /*@Override
     public boolean canOverlapWith(AbstractPart other) {
         return OverlappingPartRegistry.canOverlapWithCarpets(other.definition);
-    }
+    }*/
 
     @Override
     public BlockState getVanillaState() {
