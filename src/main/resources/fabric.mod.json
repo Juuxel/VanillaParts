@@ -14,7 +14,7 @@
   },
 
   "license": "LGPL-3.0-only",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/vanilla_parts/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -32,6 +32,6 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric": "*",
-    "libmultipart": ">=0.2.0"
+    "libmultipart": "^0.2.0"
   }
 }
