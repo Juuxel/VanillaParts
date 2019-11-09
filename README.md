@@ -4,7 +4,7 @@
 
 [![](https://img.shields.io/github/license/Juuxel/VanillaParts.svg)](LICENSE) [![](https://img.shields.io/github/release/Juuxel/VanillaParts.svg)](https://github.com/Juuxel/VanillaParts/releases) ![](https://img.shields.io/badge/minecraft-1.14.4-blueviolet.svg)
 
-*Turn your ordinary blocks into multiparts!* • [Downloads](https://github.com/Juuxel/VanillaParts/releases) • [CurseForge](https://minecraft.curseforge.com/projects/vanilla-parts)
+*Turn your ordinary blocks into multiparts!* • [Downloads](https://github.com/Juuxel/VanillaParts/releases) • [CurseForge](https://curseforge.com/minecraft/mc-mods/vanilla-parts)
 
 <p>&nbsp;</p>
 
