@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.6-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -63,7 +63,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 jar {
-    from 'COPYING', 'COPYING.LESSER'
+    from 'LICENSE'
 }
 
 // configure the maven publication
