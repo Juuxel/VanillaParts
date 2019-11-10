@@ -52,7 +52,7 @@ public class SidingPart extends VanillaPart {
 
     @Override
     public CompoundTag toTag() {
-        return Util.on(super.toTag(), tag -> {
+        return Util.with(super.toTag(), tag -> {
             tag.putInt("Facing", facing.getId());
         });
     }

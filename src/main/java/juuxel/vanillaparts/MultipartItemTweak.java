@@ -71,6 +71,8 @@ public enum MultipartItemTweak implements UseBlockCallback {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VPartDefinitions.LEVER, holder, face, facing, false));
             } else if (block instanceof AbstractButtonBlock) {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
+            } else if (block instanceof FenceBlock) {
+                offer = handleFences(player, world, hand, hit, pos, block);
             } else {
                 for (Extension extension : extensions) {
                     offer = extension.handle(block, player, world, hand, hit, pos);
@@ -195,6 +197,21 @@ public enum MultipartItemTweak implements UseBlockCallback {
         }
 
         return null;
+    }
+
+    private MultipartContainer.PartOffer handleFences(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
+        ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
+        BlockState state = block.getPlacementState(ctx);
+        if (state == null) return null;
+
+        return MultipartUtil.offerNewPart(world, pos, holder -> {
+            return new FencePart(
+                    VPartDefinitions.FENCE_PARTS.get(block), holder, block,
+                    state.get(HorizontalConnectedBlock.NORTH),
+                    state.get(HorizontalConnectedBlock.EAST),
+                    state.get(HorizontalConnectedBlock.SOUTH),
+                    state.get(HorizontalConnectedBlock.WEST));
+        });
     }
 
     @FunctionalInterface

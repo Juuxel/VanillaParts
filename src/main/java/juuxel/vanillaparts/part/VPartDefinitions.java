@@ -8,10 +8,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.VanillaParts;
 import juuxel.vanillaparts.util.Util;
-import net.minecraft.block.AbstractButtonBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SlabBlock;
+import net.minecraft.block.*;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.registry.Registry;
 
@@ -26,6 +23,7 @@ public final class VPartDefinitions {
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
     public static final Map<Block, PartDefinition> SLAB_PARTS = new HashMap<>();
     public static final Map<Block, PartDefinition> BUTTON_PARTS = new HashMap<>();
+    public static final Map<Block, PartDefinition> FENCE_PARTS = new HashMap<>();
 
     // Parts
     public static final PartDefinition TORCH = new PartDefinition(
@@ -51,7 +49,7 @@ public final class VPartDefinitions {
         register(TORCH);
         register(LEVER);
 
-        // Add slab and button parts
+        // Add slab, button and fence parts
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {
             if (block instanceof SlabBlock) {
                 PartDefinition def = new PartDefinition(
@@ -69,6 +67,14 @@ public final class VPartDefinitions {
                 );
                 register(def);
                 BUTTON_PARTS.put(block, def);
+            } else if (block instanceof FenceBlock) {
+                PartDefinition def = new PartDefinition(
+                        VanillaParts.id(id.getNamespace() + "/" + id.getPath()),
+                        (definition, holder, tag) -> new FencePart(definition, holder, block, tag.getBoolean("North"), tag.getBoolean("East"), tag.getBoolean("South"), tag.getBoolean("West")),
+                        (definition, holder, buf, ctx) -> new FencePart(definition, holder, block, buf.readBoolean(), buf.readBoolean(), buf.readBoolean(), buf.readBoolean())
+                );
+                register(def);
+                FENCE_PARTS.put(block, def);
             }
         });
     }

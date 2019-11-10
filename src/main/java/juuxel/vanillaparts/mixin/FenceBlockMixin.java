@@ -1,0 +1,57 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/. */
+
+package juuxel.vanillaparts.mixin;
+
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import alexiil.mc.lib.multipart.api.MultipartUtil;
+import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.part.FencePart;
+import juuxel.vanillaparts.part.VPartDefinitions;
+import juuxel.vanillaparts.util.FenceExtensions;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FenceBlock;
+import net.minecraft.block.HorizontalConnectedBlock;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.Collections;
+import java.util.List;
+
+@Mixin(FenceBlock.class)
+public class FenceBlockMixin extends HorizontalConnectedBlock implements FenceExtensions, NativeMultipart {
+    protected FenceBlockMixin(float f, float g, float h, float i, float j, Settings settings) {
+        super(f, g, h, i, j, settings);
+    }
+
+    @Override
+    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        return Collections.singletonList(holder -> new FencePart(
+                VPartDefinitions.FENCE_PARTS.get(this), holder,
+                this, state.get(NORTH), state.get(EAST), state.get(SOUTH), state.get(WEST)
+        ));
+    }
+
+    @Override
+    public boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos) {
+        MultipartContainer container = MultipartUtil.get((World) world, neighborPos);
+        return container != null && !container.getAllParts(part -> part instanceof FencePart && ((FencePart) part).getBlock().getDefaultState().getMaterial() == this.material).isEmpty();
+    }
+
+    @Redirect(method = "getStateForNeighborUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
+    private boolean redirectCanConnect_getStateForNeighborUpdate(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, BlockState bs1, Direction d1, BlockState bs2, IWorld world, BlockPos pos1, BlockPos pos2) {
+        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(world, pos2);
+    }
+
+    @Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
+    private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, ItemPlacementContext ctx) {
+        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()));
+    }
+}

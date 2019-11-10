@@ -42,13 +42,16 @@ public abstract class VanillaPart extends AbstractPart {
 
     @Override
     public void onAdded(MultipartEventBus bus) {
+        System.out.println("sided? 1");
         bus.addListener(this, NeighbourUpdateEvent.class, event -> {
+            System.out.println("sided? 2");
             MultipartContainer container = this.holder.getContainer();
             World world = container.getMultipartWorld();
             BlockPos pos = container.getMultipartPos();
             if (!getVanillaState().canPlaceAt(world, pos)) {
                 this.removeAndDrop();
             }
+            onNeighborUpdate(event.pos);
         });
     }
 
@@ -56,4 +59,6 @@ public abstract class VanillaPart extends AbstractPart {
     public ItemStack getPickStack() {
         return new ItemStack(getVanillaState().getBlock());
     }
+
+    protected void onNeighborUpdate(BlockPos neighborPos) {}
 }
