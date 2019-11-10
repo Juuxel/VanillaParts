@@ -9,6 +9,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public final class Util {
     private Util() {}
@@ -23,5 +24,10 @@ public final class Util {
 
     public static <T> T safeGet(T[] ts, int index) {
         return ts[Math.abs(index % ts.length)];
+    }
+
+    public static <T> T on(T obj, Consumer<T> fn) {
+        fn.accept(obj);
+        return obj;
     }
 }

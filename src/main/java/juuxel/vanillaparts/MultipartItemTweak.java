@@ -6,6 +6,8 @@ package juuxel.vanillaparts;
 
 import alexiil.mc.lib.multipart.api.*;
 import juuxel.vanillaparts.part.*;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.SlabType;
@@ -22,10 +24,29 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
-enum MultipartItemTweak implements UseBlockCallback {
+public enum MultipartItemTweak implements UseBlockCallback {
     INSTANCE;
+
+    private final Event<Predicate<Block>> checkers = EventFactory.createArrayBacked(Predicate.class, checkers -> block -> {
+        for (Predicate<Block> checker : checkers) {
+            if (checker.test(block)) return true;
+        }
+        return false;
+    });
+    private final List<Extension> extensions = new ArrayList<>();
+
+    public void addExtension(Extension extension) {
+        extensions.add(extension);
+    }
+
+    public void addCustomContainerChecker(Predicate<Block> checker) {
+        checkers.register(checker);
+    }
 
     @Override
     public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
@@ -37,7 +58,7 @@ enum MultipartItemTweak implements UseBlockCallback {
             BlockPos pos = hit.getBlockPos().offset(hit.getSide());
             MultipartContainer.PartOffer offer = null;
 
-            if (isMissingContainer(world, pos) && !(block instanceof SlabBlock)) // slabs do custom checking
+            if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || checkers.invoker().test(block))) // slabs do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement
 
             if (block instanceof CarpetBlock) {
@@ -51,7 +72,14 @@ enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof AbstractButtonBlock) {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else {
-                return ActionResult.PASS;
+                for (Extension extension : extensions) {
+                    offer = extension.handle(block, player, world, hand, hit, pos);
+                    if (offer != null) break;
+                }
+
+                if (offer == null) {
+                    return ActionResult.PASS;
+                }
             }
 
             if (offer != null) {
@@ -72,7 +100,7 @@ enum MultipartItemTweak implements UseBlockCallback {
         return ActionResult.PASS;
     }
 
-    private boolean isMissingContainer(World world, BlockPos pos) {
+    public static boolean isMissingContainer(World world, BlockPos pos) {
         return !(world.getBlockState(pos).getBlock() instanceof NativeMultipart) && MultipartUtil.get(world, pos) == null;
     }
 
@@ -172,5 +200,10 @@ enum MultipartItemTweak implements UseBlockCallback {
     @FunctionalInterface
     private interface WallMountedPartFactory {
         AbstractPart create(MultipartHolder holder, WallMountLocation face, Direction facing);
+    }
+
+    @FunctionalInterface
+    public interface Extension {
+        /*@Nullable*/ MultipartContainer.PartOffer handle(Block block, PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos);
     }
 }

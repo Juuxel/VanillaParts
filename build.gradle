@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.6-SNAPSHOT'
+    id 'fabric-loom' version '0.2.5-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -18,6 +18,21 @@ repositories {
         name = "BuildCraft"
         url = "https://mod-buildcraft.com/maven"
     }
+
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven"
+    }
+
+    maven {
+        name = "Cotton"
+        url = "http://server.bbkr.space:8081/artifactory/libs-release"
+    }
+
+    maven {
+        name = "Swordglowsblue"
+        url = "https://maven.swordglowsblue.com"
+    }
 }
 
 dependencies {
@@ -30,6 +45,10 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
     include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
+
+    modImplementation "extra-pieces:extrapieces:$project.extrapieces"
+    modRuntime "io.github.cottonmc:Jankson:$project.jankson" // for EP
+    modRuntime "artificemc:artifice:$project.artifice"
 
     modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
 }

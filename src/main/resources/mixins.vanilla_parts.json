@@ -2,6 +2,8 @@
   "required": true,
   "package": "juuxel.vanillaparts.mixin",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "juuxel.vanillaparts.VPMixinPlugin",
+
   "mixins": [
     "AbstractButtonBlockAccessor",
     "AbstractButtonBlockMixin",
@@ -10,7 +12,8 @@
     "LeverBlockMixin",
     "SlabBlockMixin",
     "TorchBlockMixin",
-    "WallTorchBlockMixin"
+    "WallTorchBlockMixin",
+    "extrapieces.SidingPieceBlockMixin"
   ],
   "client": [
   ],
