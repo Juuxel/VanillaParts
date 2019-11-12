@@ -12,8 +12,12 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
 
 public class FencePart extends HorizontallyConnectedPart {
+    private static final VoxelShape POST_SHAPE = Block.createCuboidShape(6, 0, 6, 10, 16, 10);
+
+    // Automatically calculates connections
     public FencePart(PartDefinition definition, MultipartHolder holder, Block fence) {
         super(definition, holder, fence);
     }
@@ -23,10 +27,15 @@ public class FencePart extends HorizontallyConnectedPart {
     }
 
     @Override
+    public VoxelShape getShape() {
+        return POST_SHAPE;
+    }
+
+    @Override
     protected boolean canConnectTo(BlockPos neighborPos, Direction d) {
         BlockState state = getWorld().getBlockState(neighborPos);
         Direction sideOfOther = d.getOpposite();
         boolean isSideSolidFullSquare = state.isSideSolidFullSquare(getWorld(), neighborPos, sideOfOther);
-        return ((FenceBlock) block).canConnect(state, isSideSolidFullSquare, sideOfOther) || ((FenceExtensions) block).vanillaParts_canConnect(getWorld(), neighborPos);
+        return ((FenceBlock) block).canConnect(state, isSideSolidFullSquare, sideOfOther) || ((FenceExtensions) block).vanillaParts_canConnect(getWorld(), neighborPos, sideOfOther);
     }
 }

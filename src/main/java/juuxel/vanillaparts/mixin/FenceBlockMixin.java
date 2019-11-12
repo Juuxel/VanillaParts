@@ -42,19 +42,19 @@ public class FenceBlockMixin extends HorizontalConnectedBlock implements FenceEx
     }
 
     @Override
-    public boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos) {
+    public boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos, Direction sideOfOther) {
         MultipartContainer container = MultipartUtil.get((World) world, neighborPos);
-        return container != null && !container.getAllParts(part -> part instanceof FencePart && ((FencePart) part).getBlock().getDefaultState().getMaterial() == this.material).isEmpty();
+        return container != null && !container.getAllParts(part -> part instanceof FencePart && ((FencePart) part).getBlock().getDefaultState().getMaterial() == this.material && !((FencePart) part).isBlocked(sideOfOther)).isEmpty();
     }
 
     @Redirect(method = "getStateForNeighborUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
     private boolean redirectCanConnect_getStateForNeighborUpdate(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, BlockState bs1, Direction d1, BlockState bs2, IWorld world, BlockPos pos1, BlockPos pos2) {
-        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(world, pos2);
+        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(world, pos2, sideOfOther);
     }
 
     @Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
     private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, ItemPlacementContext ctx) {
-        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()));
+        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()), sideOfOther);
     }
 
     @Override

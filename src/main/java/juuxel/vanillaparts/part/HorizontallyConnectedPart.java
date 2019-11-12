@@ -4,25 +4,39 @@
 
 package juuxel.vanillaparts.part;
 
+import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
+import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
+import alexiil.mc.lib.multipart.api.event.PartRemovedEvent;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.*;
+import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalConnectedBlock;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.util.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.EmptyBlockView;
 
 public abstract class HorizontallyConnectedPart extends VanillaPart {
     public static final ParentNetIdSingle<HorizontallyConnectedPart> NET_HORIZONTALLY_CONNECTED;
     public static final NetIdDataK<HorizontallyConnectedPart> CONNECTION_DATA;
-    private static final VoxelShape POST_SHAPE = Block.createCuboidShape(6, 0, 6, 10, 16, 10);
+    private static final Direction[] HORIZONTAL_DIRECTIONS = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
+    private static final ImmutableMap<Direction, BooleanProperty> DIRECTION_PROPERTIES =
+            ImmutableMap.of(
+                    Direction.NORTH, HorizontalConnectedBlock.NORTH,
+                    Direction.EAST, HorizontalConnectedBlock.EAST,
+                    Direction.SOUTH, HorizontalConnectedBlock.SOUTH,
+                    Direction.WEST, HorizontalConnectedBlock.WEST
+            );
 
     static {
         NET_HORIZONTALLY_CONNECTED = NET_ID.subType(HorizontallyConnectedPart.class, "vanilla_parts:horizontally_connected");
@@ -33,11 +47,14 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     private boolean east = false;
     private boolean south = false;
     private boolean west = false;
+    private boolean calculateConnections = false;
     protected final HorizontalConnectedBlock block;
 
+    // Automatically calculates connections
     public HorizontallyConnectedPart(PartDefinition definition, MultipartHolder holder, Block block) {
         super(definition, holder);
         this.block = (HorizontalConnectedBlock) block;
+        this.calculateConnections = true;
     }
 
     public HorizontallyConnectedPart(PartDefinition definition, MultipartHolder holder, Block block, boolean north, boolean east, boolean south, boolean west) {
@@ -62,11 +79,6 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     @Override
-    public VoxelShape getShape() {
-        return POST_SHAPE;
-    }
-
-    @Override
     public VoxelShape getDynamicShape(float partialTicks) {
         return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
@@ -82,6 +94,15 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     protected abstract boolean canConnectTo(BlockPos neighborPos, Direction d);
+
+    public boolean isBlocked(Direction d) {
+        BooleanProperty directionProperty = DIRECTION_PROPERTIES.get(d);
+        if (directionProperty == null) {
+            throw new IllegalArgumentException("Trying to check vertical connections in isBlocked()!");
+        }
+        VoxelShape otherParts = VoxelShapes.combine(holder.getContainer().getCurrentShape(), getShape(), BooleanBiFunction.ONLY_FIRST);
+        return VoxelShapes.matchesAnywhere(otherParts, block.getDefaultState().with(directionProperty, true).getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN), BooleanBiFunction.AND);
+    }
 
     private boolean getConnection(Direction d) {
         switch (d) {
@@ -125,13 +146,46 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     @Override
     protected void onNeighborUpdate(BlockPos neighborPos) {
         Direction side = Util.compare(getPos(), neighborPos);
-        boolean canConnect = canConnectTo(neighborPos, side);
+        if (side.getAxis().isHorizontal()) {
+            recalculateConnection(side, neighborPos);
+        }
+    }
+
+    private void recalculateConnections() {
+        BlockPos pos = getPos();
+        BlockPos.Mutable mut = new BlockPos.Mutable(pos);
+        for (Direction direction : HORIZONTAL_DIRECTIONS) {
+            mut.setOffset(direction); // confusing naming; should be offsetMutable or addOffset
+            recalculateConnection(direction, mut);
+            mut.set(pos);
+        }
+    }
+
+    private void recalculateConnection(Direction side, BlockPos neighborPos) {
+        boolean canConnect = canConnectTo(neighborPos, side) && !isBlocked(side);
         if (getConnection(side) != canConnect) {
             setConnection(side, canConnect);
             holder.getContainer().sendNetworkUpdate(this, CONNECTION_DATA, (obj, buf, ctx) -> {
                 buf.writeBoolean(north).writeBoolean(east).writeBoolean(south).writeBoolean(west);
             });
         }
+    }
+
+    @Override
+    public void onAdded(MultipartEventBus bus) {
+        super.onAdded(bus);
+        bus.addListener(this, PartAddedEvent.class, event -> {
+            if (event.part != this) {
+                recalculateConnections();
+            } else if (calculateConnections) {
+                recalculateConnections();
+                calculateConnections = false; // you never know
+            }
+        });
+        bus.addListener(this, PartRemovedEvent.class, event -> {
+            holder.getContainer().recalculateShape();
+            recalculateConnections();
+        });
     }
 
     @Override

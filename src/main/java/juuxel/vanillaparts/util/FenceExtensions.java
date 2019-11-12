@@ -5,8 +5,9 @@
 package juuxel.vanillaparts.util;
 
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
 
 public interface FenceExtensions {
-    boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos);
+    boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos, Direction sideOfOther);
 }
