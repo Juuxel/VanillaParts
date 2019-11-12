@@ -38,9 +38,9 @@ public enum SidingItemTweak implements MultipartItemTweak.Extension {
             boolean missingAtOffset = isMissingContainer(world, pos);
             if (missingAtHit && missingAtOffset) return null;
             Direction hitSide = hit.getSide();
-            System.out.println("hitside: " + hitSide);
-            System.out.println("hitaxis: " + hitSide.getAxis());
-            System.out.println("hit: " + hit.getPos());
+//            System.out.println("hitside: " + hitSide);
+//            System.out.println("hitaxis: " + hitSide.getAxis());
+//            System.out.println("hit: " + hit.getPos());
 
             Direction facing = hitSide.getOpposite();
             if (hitSide.getAxis().isVertical()) {

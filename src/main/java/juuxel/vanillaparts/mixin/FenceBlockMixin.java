@@ -10,6 +10,8 @@ import alexiil.mc.lib.multipart.api.NativeMultipart;
 import juuxel.vanillaparts.part.FencePart;
 import juuxel.vanillaparts.part.VPartDefinitions;
 import juuxel.vanillaparts.util.FenceExtensions;
+import juuxel.vanillaparts.util.Util;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.HorizontalConnectedBlock;
@@ -53,5 +55,11 @@ public class FenceBlockMixin extends HorizontalConnectedBlock implements FenceEx
     @Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
     private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, ItemPlacementContext ctx) {
         return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()));
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block source, BlockPos neighborPos, boolean flag) {
+        super.neighborUpdate(state, world, pos, source, neighborPos, flag);
+        replaceBlock(state, state.getStateForNeighborUpdate(Util.compare(pos, neighborPos), world.getBlockState(neighborPos), world, pos, neighborPos), world, pos, 3);
     }
 }

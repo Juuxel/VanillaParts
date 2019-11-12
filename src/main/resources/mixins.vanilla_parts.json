@@ -17,6 +17,7 @@
     "extrapieces.SidingPieceBlockMixin"
   ],
   "client": [
+    "client.MultipartBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1

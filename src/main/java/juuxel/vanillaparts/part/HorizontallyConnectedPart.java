@@ -22,6 +22,7 @@ import net.minecraft.world.EmptyBlockView;
 public abstract class HorizontallyConnectedPart extends VanillaPart {
     public static final ParentNetIdSingle<HorizontallyConnectedPart> NET_HORIZONTALLY_CONNECTED;
     public static final NetIdDataK<HorizontallyConnectedPart> CONNECTION_DATA;
+    private static final VoxelShape POST_SHAPE = Block.createCuboidShape(6, 0, 6, 10, 16, 10);
 
     static {
         NET_HORIZONTALLY_CONNECTED = NET_ID.subType(HorizontallyConnectedPart.class, "vanilla_parts:horizontally_connected");
@@ -62,12 +63,12 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
 
     @Override
     public VoxelShape getShape() {
-        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return POST_SHAPE;
     }
 
     @Override
     public VoxelShape getDynamicShape(float partialTicks) {
-        return getShape();
+        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override
@@ -125,14 +126,11 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     protected void onNeighborUpdate(BlockPos neighborPos) {
         Direction side = Util.compare(getPos(), neighborPos);
         boolean canConnect = canConnectTo(neighborPos, side);
-        System.out.println("Side: " + side + ", can connect? " + canConnect + ", connection: " + getConnection(side));
         if (getConnection(side) != canConnect) {
             setConnection(side, canConnect);
-            System.out.println("again: Side: " + side + ", can connect? " + canConnect + ", connection: " + getConnection(side));
             holder.getContainer().sendNetworkUpdate(this, CONNECTION_DATA, (obj, buf, ctx) -> {
                 buf.writeBoolean(north).writeBoolean(east).writeBoolean(south).writeBoolean(west);
             });
-            holder.getContainer().redrawIfChanged();
         }
     }
 
