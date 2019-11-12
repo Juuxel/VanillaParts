@@ -4,6 +4,7 @@
 
 package juuxel.vanillaparts.part;
 
+import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import juuxel.vanillaparts.util.FenceExtensions;
@@ -37,5 +38,10 @@ public class FencePart extends HorizontallyConnectedPart {
         Direction sideOfOther = d.getOpposite();
         boolean isSideSolidFullSquare = state.isSideSolidFullSquare(getWorld(), neighborPos, sideOfOther);
         return ((FenceBlock) block).canConnect(state, isSideSolidFullSquare, sideOfOther) || ((FenceExtensions) block).vanillaParts_canConnect(getWorld(), neighborPos, sideOfOther);
+    }
+
+    @Override
+    public boolean canOverlapWith(AbstractPart other) {
+        return other instanceof CarpetPart;
     }
 }

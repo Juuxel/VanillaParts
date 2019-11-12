@@ -4,6 +4,7 @@
 
 package juuxel.vanillaparts.part;
 
+import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
@@ -32,10 +33,10 @@ public class CarpetPart extends VanillaPart {
         return new StaticVanillaModelKey(getVanillaState());
     }
 
-    /*@Override
+    @Override
     public boolean canOverlapWith(AbstractPart other) {
-        return OverlappingPartRegistry.canOverlapWithCarpets(other.definition);
-    }*/
+        return /*OverlappingPartRegistry.canOverlapWithCarpets(other.definition)*/ other instanceof FencePart;
+    }
 
     @Override
     public BlockState getVanillaState() {

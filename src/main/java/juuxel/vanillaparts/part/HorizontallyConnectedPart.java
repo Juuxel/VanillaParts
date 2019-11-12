@@ -4,6 +4,7 @@
 
 package juuxel.vanillaparts.part;
 
+import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
@@ -100,8 +101,15 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
         if (directionProperty == null) {
             throw new IllegalArgumentException("Trying to check vertical connections in isBlocked()!");
         }
-        VoxelShape otherParts = VoxelShapes.combine(holder.getContainer().getCurrentShape(), getShape(), BooleanBiFunction.ONLY_FIRST);
-        return VoxelShapes.matchesAnywhere(otherParts, block.getDefaultState().with(directionProperty, true).getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN), BooleanBiFunction.AND);
+        VoxelShape fenceShape = block.getDefaultState().with(directionProperty, true).getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        for (AbstractPart part : holder.getContainer().getAllParts()) {
+            if (part == this || part.canOverlapWith(this)) continue;
+            if (VoxelShapes.matchesAnywhere(fenceShape, part.getShape(), BooleanBiFunction.AND)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private boolean getConnection(Direction d) {
