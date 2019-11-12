@@ -41,10 +41,9 @@ public final class Util {
      * @return the target direction from the origin
      */
     public static Direction compare(BlockPos origin, BlockPos target) {
-        BlockPos delta = target.subtract(origin);
-        int x = delta.getX();
-        int y = delta.getY();
-        int z = delta.getZ();
+        int x = target.getX() - origin.getX();
+        int y = target.getY() - origin.getY();
+        int z = target.getZ() - origin.getZ();
         if (x == -1) return Direction.WEST;
         else if (x == 1) return Direction.EAST;
         else if (z == -1) return Direction.NORTH;
