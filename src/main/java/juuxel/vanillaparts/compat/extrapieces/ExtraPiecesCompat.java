@@ -4,7 +4,6 @@
 
 package juuxel.vanillaparts.compat.extrapieces;
 
-import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
 import juuxel.vanillaparts.MultipartItemTweak;
