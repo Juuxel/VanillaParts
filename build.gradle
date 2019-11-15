@@ -33,6 +33,8 @@ repositories {
         name = "Swordglowsblue"
         url = "https://maven.swordglowsblue.com"
     }
+
+    mavenLocal()
 }
 
 dependencies {
@@ -45,6 +47,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
     include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
+    modImplementation "io.github.juuxel:BlocksToParts:$project.blockstoparts"
+    include "io.github.juuxel:BlocksToParts:$project.blockstoparts"
 
     modImplementation "extra-pieces:extrapieces:$project.extrapieces"
     modRuntime "io.github.cottonmc:Jankson:$project.jankson" // for EP

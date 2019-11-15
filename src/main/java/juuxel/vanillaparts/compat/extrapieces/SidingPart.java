@@ -10,8 +10,10 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
+import juuxel.blockstoparts.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.part.Categories;
+import juuxel.vanillaparts.part.VPCategories;
 import juuxel.vanillaparts.part.VanillaPart;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,18 +38,18 @@ public class SidingPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return siding.getDefaultState().with(SidingPieceBlock.FACING_HORIZONTAL, facing);
     }
 
     @Override
     public VoxelShape getShape() {
-        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -61,5 +63,10 @@ public class SidingPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeEnumConstant(facing);
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.SIDING;
     }
 }

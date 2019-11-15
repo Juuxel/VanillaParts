@@ -12,7 +12,8 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixUtils;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.part.Categories;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
@@ -55,7 +56,7 @@ public class SlabPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SlabPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState().with(SlabBlock.TYPE, half == BlockHalf.TOP ? SlabType.TOP : SlabType.BOTTOM);
     }
 
@@ -83,5 +84,10 @@ public class SlabPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeBoolean(half == BlockHalf.TOP);
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.SLAB;
     }
 }

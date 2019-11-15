@@ -12,6 +12,7 @@ import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.part.Categories;
 import juuxel.vanillaparts.mixin.LeverBlockAccessor;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.BlockState;
@@ -58,7 +59,7 @@ public class LeverPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return Blocks.LEVER.getDefaultState()
                 .with(LeverBlock.FACE, face)
                 .with(LeverBlock.FACING, facing)
@@ -71,7 +72,7 @@ public class LeverPart extends WallMountedRedstonePart {
         updateRedstoneLevels();
         if (player.world.isClient) {
             if (powered) {
-                LeverBlockAccessor.callSpawnParticles(getVanillaState(), player.world, hit.getBlockPos(), 1f);
+                LeverBlockAccessor.callSpawnParticles(getBlockState(), player.world, hit.getBlockPos(), 1f);
             }
         } else {
             float pitch = powered ? 0.6f : 0.5f;
@@ -87,6 +88,11 @@ public class LeverPart extends WallMountedRedstonePart {
         updateRedstoneLevels();
         MultipartPropertyContainer props = this.holder.getContainer().getProperties();
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.LEVER;
     }
 
     private static WallMountLocation readFace(int i) {

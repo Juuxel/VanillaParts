@@ -13,7 +13,7 @@ import alexiil.mc.lib.multipart.api.event.PartRemovedEvent;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.*;
 import com.google.common.collect.ImmutableMap;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
+import juuxel.blockstoparts.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -71,7 +71,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState()
                 .with(HorizontalConnectedBlock.NORTH, north)
                 .with(HorizontalConnectedBlock.EAST, east)
@@ -81,12 +81,12 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
 
     @Override
     public VoxelShape getDynamicShape(float partialTicks) {
-        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override
     public VoxelShape getCollisionShape() {
-        return getVanillaState().getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override

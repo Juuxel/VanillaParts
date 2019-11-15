@@ -14,6 +14,7 @@ import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.part.Categories;
 import juuxel.vanillaparts.mixin.AbstractButtonBlockAccessor;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.*;
@@ -68,7 +69,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState()
                 .with(AbstractButtonBlock.FACE, face)
                 .with(AbstractButtonBlock.FACING, facing)
@@ -132,6 +133,11 @@ public class ButtonPart extends WallMountedRedstonePart {
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
         bus.addContextlessListener(this, PartTickEvent.class, this::tick);
         bus.addListener(this, PartEventEntityCollide.class, event -> tickWooden());
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.BUTTON;
     }
 
     private static WallMountLocation readFace(int i) {

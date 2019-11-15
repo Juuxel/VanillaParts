@@ -9,7 +9,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
+import juuxel.blockstoparts.model.DynamicVanillaModelKey;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.util.math.BlockPos;
@@ -32,7 +32,7 @@ public abstract class WallMountedRedstonePart extends VanillaPart {
 
     @Override
     public VoxelShape getShape() {
-        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override

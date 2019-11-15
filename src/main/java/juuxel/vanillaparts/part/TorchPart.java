@@ -15,7 +15,8 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixUtils;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.part.Categories;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -87,7 +88,7 @@ public class TorchPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -102,7 +103,7 @@ public class TorchPart extends VanillaPart {
                 () -> {
                     World world = getWorld();
                     if (world.isClient && world.random.nextInt(10) == 0) {
-                        BlockState state = getVanillaState();
+                        BlockState state = getBlockState();
                         state.getBlock().randomDisplayTick(state, world, getPos(), world.random);
                     }
                 }
@@ -110,7 +111,7 @@ public class TorchPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return facing == Facing.GROUND ? Blocks.TORCH.getDefaultState() : Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.FACING, facing.getDirection());
     }
 
@@ -125,6 +126,11 @@ public class TorchPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeByte((byte) facing.ordinal());
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.TORCH;
     }
 
     public enum Facing {

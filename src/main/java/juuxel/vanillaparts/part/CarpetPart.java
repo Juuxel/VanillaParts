@@ -8,7 +8,8 @@ import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.part.Categories;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.DyeColor;
@@ -30,7 +31,7 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -39,7 +40,12 @@ public class CarpetPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return VPartDefinitions.CARPETS.get(color).getDefaultState();
+    }
+
+    @Override
+    public Categories getCategories() {
+        return VPCategories.CARPET;
     }
 }
