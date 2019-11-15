@@ -204,7 +204,19 @@ public enum MultipartItemTweak implements UseBlockCallback {
         BlockState state = block.getPlacementState(ctx);
         if (state == null) return null;
 
-        return MultipartUtil.offerNewPart(world, pos, holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
+        MultipartContainer.PartOffer offer = null;
+
+        Direction side = hit.getSide();
+        double axisPos = hit.getPos().getComponentAlongAxis(side.getAxis());
+        if (axisPos != 0.0 && axisPos != 1.0 && !isMissingContainer(world, hit.getBlockPos())) {
+            offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
+        }
+
+        if (offer == null) {
+            offer = MultipartUtil.offerNewPart(world, pos, holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
+        }
+
+        return offer;
     }
 
     @FunctionalInterface

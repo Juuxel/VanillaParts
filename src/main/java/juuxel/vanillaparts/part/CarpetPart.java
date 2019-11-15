@@ -35,11 +35,6 @@ public class CarpetPart extends VanillaPart {
     }
 
     @Override
-    public boolean canOverlapWith(AbstractPart other) {
-        return /*OverlappingPartRegistry.canOverlapWithCarpets(other.definition)*/ other instanceof FencePart;
-    }
-
-    @Override
     public BlockState getBlockState() {
         return VPartDefinitions.CARPETS.get(color).getDefaultState();
     }
