@@ -5,7 +5,6 @@
 package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import juuxel.vanillaparts.part.FencePart;
 import juuxel.vanillaparts.part.VPartDefinitions;
@@ -43,7 +42,7 @@ public class FenceBlockMixin extends HorizontalConnectedBlock implements FenceEx
 
     @Override
     public boolean vanillaParts_canConnect(IWorld world, BlockPos neighborPos, Direction sideOfOther) {
-        MultipartContainer container = MultipartUtil.get((World) world, neighborPos);
+        MultipartContainer container = Util.getPartContainer(world, neighborPos);
         return container != null && !container.getAllParts(part -> part instanceof FencePart && ((FencePart) part).getBlock().getDefaultState().getMaterial() == this.material && !((FencePart) part).isBlocked(sideOfOther)).isEmpty();
     }
 

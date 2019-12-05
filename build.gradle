@@ -51,6 +51,8 @@ dependencies {
     modRuntime "artificemc:artifice:$project.artifice"
 
     modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
+
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 }
 
 processResources {
