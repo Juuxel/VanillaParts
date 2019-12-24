@@ -41,7 +41,7 @@ public abstract class WallMountedRedstonePart extends VanillaPart {
     }
 
     @Override
-    public VoxelShape getDynamicShape(float partialTicks) {
+    public VoxelShape getOutlineShape() {
         return getShape();
     }
 

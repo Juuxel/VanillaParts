@@ -9,7 +9,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
-import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
+//import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
 import juuxel.vanillaparts.part.VanillaPart;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
@@ -37,7 +37,7 @@ public class SidingPart extends VanillaPart {
 
     @Override
     public BlockState getVanillaState() {
-        return siding.getDefaultState().with(SidingPieceBlock.FACING_HORIZONTAL, facing);
+        return siding.getDefaultState()/*.with(SidingPieceBlock.FACING_HORIZONTAL, facing)*/;
     }
 
     @Override

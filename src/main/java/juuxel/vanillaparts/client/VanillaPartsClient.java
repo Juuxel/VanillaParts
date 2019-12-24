@@ -4,9 +4,8 @@
 
 package juuxel.vanillaparts.client;
 
-import alexiil.mc.lib.multipart.api.render.MultipartRenderRegistry;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import alexiil.mc.lib.multipart.api.render.PartStaticModelRegisterEvent;
+import juuxel.vanillaparts.part.model.VanillaModelKey;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -15,7 +14,8 @@ import net.fabricmc.api.Environment;
 public final class VanillaPartsClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        MultipartRenderRegistry.registerBaker(DynamicVanillaModelKey.class, VanillaPartModel.INSTANCE);
-        MultipartRenderRegistry.registerBaker(StaticVanillaModelKey.class, VanillaPartModel.INSTANCE);
+        PartStaticModelRegisterEvent.EVENT.register(model -> {
+            model.register(VanillaModelKey.class, VanillaPartModel.INSTANCE);
+        });
     }
 }

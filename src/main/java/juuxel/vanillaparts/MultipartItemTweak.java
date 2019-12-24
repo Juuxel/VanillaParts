@@ -58,7 +58,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
             BlockPos pos = hit.getBlockPos().offset(hit.getSide());
             MultipartContainer.PartOffer offer = null;
 
-            if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || checkers.invoker().test(block))) // slabs do custom checking
+            if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || block instanceof FenceBlock || checkers.invoker().test(block))) // slabs and fences do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement
 
             if (block instanceof CarpetBlock) {
@@ -208,6 +208,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
         Direction side = hit.getSide();
         double axisPos = hit.getPos().getComponentAlongAxis(side.getAxis());
+        System.out.println("Side: " + side + ", axisPos: " + axisPos);
         if (axisPos != 0.0 && axisPos != 1.0 && !isMissingContainer(world, hit.getBlockPos())) {
             offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
         }

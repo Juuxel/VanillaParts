@@ -80,7 +80,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     @Override
-    public VoxelShape getDynamicShape(float partialTicks) {
+    public VoxelShape getOutlineShape() {
         return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 

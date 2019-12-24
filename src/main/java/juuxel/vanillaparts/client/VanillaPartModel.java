@@ -40,7 +40,7 @@ public enum VanillaPartModel implements PartModelBaker<VanillaModelKey> {
                     {
                         wrapped = MinecraftClient.getInstance()
                                 .getBakedModelManager()
-                                .getBlockStateMaps()
+                                .getBlockModels()
                                 .getModel(key.getState());
                     }
 

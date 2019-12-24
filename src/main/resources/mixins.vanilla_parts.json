@@ -13,8 +13,7 @@
     "LeverBlockMixin",
     "SlabBlockMixin",
     "TorchBlockMixin",
-    "WallTorchBlockMixin",
-    "extrapieces.SidingPieceBlockMixin"
+    "WallTorchBlockMixin"
   ],
   "client": [
     "client.MultipartBlockMixin"

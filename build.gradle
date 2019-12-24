@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '0.2.5-SNAPSHOT'
+    id 'fabric-loom' version '0.2.7-SNAPSHOT'
     id 'maven-publish'
 }
 
@@ -46,9 +46,9 @@ dependencies {
     modImplementation group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
     include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
 
-    modImplementation "extra-pieces:extrapieces:$project.extrapieces"
-    modRuntime "io.github.cottonmc:Jankson:$project.jankson" // for EP
-    modRuntime "artificemc:artifice:$project.artifice"
+    //modImplementation "extra-pieces:extrapieces:$project.extrapieces"
+    //modRuntime "io.github.cottonmc:Jankson:$project.jankson" // for EP
+    //modRuntime "artificemc:artifice:$project.artifice"
 
     modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
 

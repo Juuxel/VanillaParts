@@ -5,13 +5,13 @@
 package juuxel.vanillaparts.compat.extrapieces;
 
 import alexiil.mc.lib.multipart.api.PartDefinition;
-import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
-import juuxel.vanillaparts.MultipartItemTweak;
-import juuxel.vanillaparts.VanillaParts;
-import juuxel.vanillaparts.util.Util;
+//import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
+//import juuxel.vanillaparts.MultipartItemTweak;
+//import juuxel.vanillaparts.VanillaParts;
+//import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
+//import net.minecraft.util.math.Direction;
+//import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public final class ExtraPiecesCompat {
     }
 
     public static void init() {
-        MultipartItemTweak.INSTANCE.addExtension(SidingItemTweak.INSTANCE);
+        /*MultipartItemTweak.INSTANCE.addExtension(SidingItemTweak.INSTANCE);
         MultipartItemTweak.INSTANCE.addCustomContainerChecker(SidingItemTweak.INSTANCE::isSiding);
 
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {
@@ -37,6 +37,6 @@ public final class ExtraPiecesCompat {
                 register(def);
                 sidingParts.put(block, def);
             }
-        });
+        });*/
     }
 }

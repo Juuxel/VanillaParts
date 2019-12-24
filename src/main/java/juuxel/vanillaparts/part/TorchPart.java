@@ -76,7 +76,7 @@ public class TorchPart extends VanillaPart {
     }
 
     @Override
-    public VoxelShape getDynamicShape(float partialTicks) {
+    public VoxelShape getOutlineShape() {
         return getShape();
     }
 

@@ -22,6 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
@@ -66,7 +67,7 @@ public class LeverPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
         powered = !powered;
         updateRedstoneLevels();
         if (player.world.isClient) {
@@ -78,7 +79,7 @@ public class LeverPart extends WallMountedRedstonePart {
             player.world.playSound(null, hit.getBlockPos(), SoundEvents.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.3f, pitch);
         }
         updateListeners();
-        return true;
+        return ActionResult.SUCCESS;
     }
 
     @Override

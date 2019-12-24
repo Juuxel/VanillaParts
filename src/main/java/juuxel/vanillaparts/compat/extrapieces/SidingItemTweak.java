@@ -6,7 +6,7 @@ package juuxel.vanillaparts.compat.extrapieces;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
-import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
+//import com.shnupbups.extrapieces.blocks.SidingPieceBlock;
 import juuxel.vanillaparts.MultipartItemTweak;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,12 +26,12 @@ public enum SidingItemTweak implements MultipartItemTweak.Extension {
     private static final Logger LOGGER = LogManager.getLogger();
 
     public boolean isSiding(Block block) {
-        return block instanceof SidingPieceBlock;
+        return /*block instanceof SidingPieceBlock*/ false;
     }
 
     @Override
     public MultipartContainer.PartOffer handle(Block block, PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos) {
-        if (block instanceof SidingPieceBlock) {
+        if (false /*block instanceof SidingPieceBlock*/) {
             if (!ExtraPiecesCompat.sidingParts.containsKey(block)) {
                 LOGGER.warn("Siding " + block + " is missing a part! Report this to Vanilla Parts!");
                 return null;

@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
 public abstract class VanillaPart extends AbstractPart {
@@ -66,4 +67,9 @@ public abstract class VanillaPart extends AbstractPart {
      * Called on both client and server neighbour update.
      */
     protected void onNeighborUpdate(BlockPos neighborPos) {}
+
+    @Override
+    public VoxelShape getCullingShape() {
+        return getOutlineShape();
+    }
 }

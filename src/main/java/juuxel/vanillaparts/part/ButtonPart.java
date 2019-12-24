@@ -22,6 +22,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
@@ -95,7 +96,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     private void tickWooden() {
-        List<? extends Entity> entities = getWorld().getEntities(ProjectileEntity.class, getShape().getBoundingBox().offset(getPos()));
+        List<? extends Entity> entities = getWorld().getNonSpectatingEntities(ProjectileEntity.class, getShape().getBoundingBox().offset(getPos()));
         boolean hasEntities = !entities.isEmpty();
         if (hasEntities != powered) {
             powered = hasEntities;
@@ -111,7 +112,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public boolean onActivate(PlayerEntity player, Hand hand, BlockHitResult hit) {
+    public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!powered) {
             timer = block.getTickRate(player.world);
             powered = true;
@@ -121,7 +122,7 @@ public class ButtonPart extends WallMountedRedstonePart {
             buttonBlock.callPlayClickSound(player, player.world, hit.getBlockPos(), true);
             updateListeners();
         }
-        return true;
+        return ActionResult.SUCCESS;
     }
 
     @Override
