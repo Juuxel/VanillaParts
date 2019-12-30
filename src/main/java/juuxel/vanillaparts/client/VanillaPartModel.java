@@ -56,4 +56,11 @@ public enum VanillaPartModel implements PartModelBaker<VanillaModelKey> {
     public void emitQuads(VanillaModelKey key, PartRenderContext ctx) {
         ctx.fallbackConsumer().accept(getWrapper(key));
     }
+
+    /**
+     * Used to clear the internal model cache when resources are reloaded.
+     */
+    void clearCache() {
+        modelWrappers.clear();
+    }
 }
