@@ -12,8 +12,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(MultipartBlock.class)
@@ -22,10 +21,11 @@ public class MultipartBlockMixin extends Block {
         super(settings);
     }
 
+    @SuppressWarnings("deprecation")
     @Override
-    public BlockState getStateForNeighborUpdate(BlockState state, Direction side, BlockState neighbourState, IWorld world, BlockPos pos, BlockPos neighbourPos) {
-        if (world.isClient() && world instanceof World) {
-            MultipartContainer container = MultipartUtil.get((World) world, pos);
+    public BlockState getStateForNeighborUpdate(BlockState state, Direction side, BlockState neighbourState, WorldAccess world, BlockPos pos, BlockPos neighbourPos) {
+        if (world.isClient()) {
+            MultipartContainer container = MultipartUtil.get(world, pos);
             if (container != null) {
                 container.fireEvent(new ClientNeighbourUpdateEvent(neighbourPos));
             }

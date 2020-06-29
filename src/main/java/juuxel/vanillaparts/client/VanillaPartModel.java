@@ -22,9 +22,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Environment(EnvType.CLIENT)
-public enum VanillaPartModel implements PartModelBaker<VanillaModelKey> {
-    INSTANCE;
-
+final class VanillaPartModel implements PartModelBaker<VanillaModelKey> {
     /**
      * A cache for ForwardingBakedModels that wrap the original models.
      * Multipart-format blockstate files create models that don't really work with passing
@@ -55,12 +53,5 @@ public enum VanillaPartModel implements PartModelBaker<VanillaModelKey> {
     @Override
     public void emitQuads(VanillaModelKey key, PartRenderContext ctx) {
         ctx.fallbackConsumer().accept(getWrapper(key));
-    }
-
-    /**
-     * Used to clear the internal model cache when resources are reloaded.
-     */
-    void clearCache() {
-        modelWrappers.clear();
     }
 }

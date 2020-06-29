@@ -4,17 +4,12 @@
 
 package juuxel.vanillaparts.util;
 
-import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.MultipartUtil;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 
-import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -55,14 +50,5 @@ public final class Util {
         else if (z == 1) return Direction.SOUTH;
         else if (y == -1) return Direction.DOWN;
         else return Direction.UP;
-    }
-
-    /**
-     * @deprecated See <a href="https://github.com/AlexIIL/LibMultiPart/issues/8">AlexIIL/LibMultipart#8</a>.
-     */
-    @Deprecated
-    @Nullable
-    public static MultipartContainer getPartContainer(IWorld world, BlockPos pos) {
-        return world instanceof World ? MultipartUtil.get((World) world, pos) : null;
     }
 }

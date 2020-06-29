@@ -10,8 +10,11 @@ import juuxel.vanillaparts.event.ClientNeighbourUpdateEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
@@ -38,7 +41,7 @@ public abstract class VanillaPart extends AbstractPart {
         World world = container.getMultipartWorld();
         BlockPos pos = container.getMultipartPos();
         ItemScatterer.spawn(world, pos, stacks);
-        world.playLevelEvent(2001, pos, Block.getRawIdFromState(getVanillaState()));
+        world.syncWorldEvent(2001, pos, Block.getRawIdFromState(getVanillaState()));
         this.holder.remove();
     }
 

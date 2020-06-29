@@ -17,10 +17,10 @@ import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.HorizontalConnectedBlock;
+import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.util.BooleanBiFunction;
+import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
@@ -33,10 +33,10 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     private static final Direction[] HORIZONTAL_DIRECTIONS = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
     private static final ImmutableMap<Direction, BooleanProperty> DIRECTION_PROPERTIES =
             ImmutableMap.of(
-                    Direction.NORTH, HorizontalConnectedBlock.NORTH,
-                    Direction.EAST, HorizontalConnectedBlock.EAST,
-                    Direction.SOUTH, HorizontalConnectedBlock.SOUTH,
-                    Direction.WEST, HorizontalConnectedBlock.WEST
+                    Direction.NORTH, HorizontalConnectingBlock.NORTH,
+                    Direction.EAST, HorizontalConnectingBlock.EAST,
+                    Direction.SOUTH, HorizontalConnectingBlock.SOUTH,
+                    Direction.WEST, HorizontalConnectingBlock.WEST
             );
 
     static {
@@ -49,12 +49,12 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     private boolean south = false;
     private boolean west = false;
     private boolean calculateConnections = false;
-    protected final HorizontalConnectedBlock block;
+    protected final HorizontalConnectingBlock block;
 
     // Automatically calculates connections
     public HorizontallyConnectedPart(PartDefinition definition, MultipartHolder holder, Block block) {
         super(definition, holder);
-        this.block = (HorizontalConnectedBlock) block;
+        this.block = (HorizontalConnectingBlock) block;
         this.calculateConnections = true;
     }
 
@@ -66,17 +66,17 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
         this.west = west;
     }
 
-    public HorizontalConnectedBlock getBlock() {
+    public HorizontalConnectingBlock getBlock() {
         return block;
     }
 
     @Override
     public BlockState getVanillaState() {
         return block.getDefaultState()
-                .with(HorizontalConnectedBlock.NORTH, north)
-                .with(HorizontalConnectedBlock.EAST, east)
-                .with(HorizontalConnectedBlock.SOUTH, south)
-                .with(HorizontalConnectedBlock.WEST, west);
+                .with(HorizontalConnectingBlock.NORTH, north)
+                .with(HorizontalConnectingBlock.EAST, east)
+                .with(HorizontalConnectingBlock.SOUTH, south)
+                .with(HorizontalConnectingBlock.WEST, west);
     }
 
     @Override
@@ -161,9 +161,9 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
 
     private void recalculateConnections() {
         BlockPos pos = getPos();
-        BlockPos.Mutable mut = new BlockPos.Mutable(pos);
+        BlockPos.Mutable mut = pos.mutableCopy();
         for (Direction direction : HORIZONTAL_DIRECTIONS) {
-            mut.setOffset(direction); // confusing naming; should be offsetMutable or addOffset
+            mut.move(direction);
             recalculateConnection(direction, mut);
             mut.set(pos);
         }

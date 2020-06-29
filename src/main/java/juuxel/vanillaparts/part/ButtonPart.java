@@ -106,7 +106,7 @@ public class ButtonPart extends WallMountedRedstonePart {
             }
             updateListeners();
             if (powered) {
-                timer = block.getTickRate(getWorld());
+                timer = buttonBlock.callGetPressTicks();
             }
         }
     }
@@ -114,7 +114,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     @Override
     public ActionResult onUse(PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (!powered) {
-            timer = block.getTickRate(player.world);
+            timer = buttonBlock.callGetPressTicks();
             powered = true;
             if (!player.world.isClient) {
                 updateRedstoneLevels();
