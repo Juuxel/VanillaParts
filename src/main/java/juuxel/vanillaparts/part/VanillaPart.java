@@ -7,10 +7,12 @@ package juuxel.vanillaparts.part;
 import alexiil.mc.lib.multipart.api.*;
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent;
 import juuxel.vanillaparts.event.ClientNeighbourUpdateEvent;
+import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -62,6 +64,11 @@ public abstract class VanillaPart extends AbstractPart {
     @Override
     public ItemStack getPickStack() {
         return new ItemStack(getVanillaState().getBlock());
+    }
+
+    @Override
+    public void addDrops(ItemDropTarget target, LootContext context) {
+        target.dropAll(getVanillaState().getDroppedStacks(Util.toBlockLootContext(context)));
     }
 
     /**

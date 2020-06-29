@@ -5,6 +5,8 @@
 package juuxel.vanillaparts.util;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.minecraft.loot.context.LootContext;
+import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -50,5 +52,24 @@ public final class Util {
         else if (z == 1) return Direction.SOUTH;
         else if (y == -1) return Direction.DOWN;
         else return Direction.UP;
+    }
+
+    /**
+     * Converts a multipart loot context to a block loot context builder.
+     *
+     * @param context the multipart loot context
+     * @return the created builder
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static LootContext.Builder toBlockLootContext(LootContext context) {
+        return new LootContext.Builder(context.getWorld())
+                .random(context.getRandom())
+                .luck(context.getLuck())
+                .parameter(LootContextParameters.BLOCK_STATE, context.get(LootContextParameters.BLOCK_STATE))
+                .parameter(LootContextParameters.POSITION, context.get(LootContextParameters.POSITION))
+                .parameter(LootContextParameters.TOOL, context.get(LootContextParameters.TOOL))
+                .optionalParameter(LootContextParameters.THIS_ENTITY, context.get(LootContextParameters.THIS_ENTITY))
+                .optionalParameter(LootContextParameters.BLOCK_ENTITY, context.get(LootContextParameters.BLOCK_ENTITY))
+                .optionalParameter(LootContextParameters.EXPLOSION_RADIUS, context.get(LootContextParameters.EXPLOSION_RADIUS));
     }
 }
