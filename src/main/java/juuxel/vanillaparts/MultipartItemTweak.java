@@ -72,7 +72,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof AbstractButtonBlock) {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else if (block instanceof FenceBlock) {
-                offer = handleFences(player, world, hand, hit, pos, block);
+                offer = handleFences(world, hit, pos, block);
             } else {
                 for (Extension extension : extensions) {
                     offer = extension.handle(block, player, world, hand, hit, pos);
@@ -199,22 +199,20 @@ public enum MultipartItemTweak implements UseBlockCallback {
         return null;
     }
 
-    private MultipartContainer.PartOffer handleFences(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
-        ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-        BlockState state = block.getPlacementState(ctx);
-        if (state == null) return null;
-
-        MultipartContainer.PartOffer offer = null;
-
-        Direction side = hit.getSide();
-        double axisPos = hit.getPos().getComponentAlongAxis(side.getAxis());
-        System.out.println("Side: " + side + ", axisPos: " + axisPos);
-        if (axisPos != 0.0 && axisPos != 1.0 && !isMissingContainer(world, hit.getBlockPos())) {
-            offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
+    private MultipartContainer.PartOffer handleFences(World world, BlockHitResult hit, BlockPos pos, Block block) {
+        if (!(block.getDefaultState().canPlaceAt(world, pos))) {
+            return null;
         }
 
-        if (offer == null) {
-            offer = MultipartUtil.offerNewPart(world, pos, holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block));
+        MultipartContainer.PartOffer offer = null;
+        MultipartContainer.MultipartCreator creator = holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block);
+
+        if (!isMissingContainer(world, hit.getBlockPos())) {
+            offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), creator);
+        }
+
+        if (offer == null && !isMissingContainer(world, pos)) {
+            offer = MultipartUtil.offerNewPart(world, pos, creator);
         }
 
         return offer;
