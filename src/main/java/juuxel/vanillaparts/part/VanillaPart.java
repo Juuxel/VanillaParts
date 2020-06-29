@@ -9,10 +9,8 @@ import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent;
 import juuxel.vanillaparts.event.ClientNeighbourUpdateEvent;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.context.LootContext;
-import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -79,5 +77,15 @@ public abstract class VanillaPart extends AbstractPart {
     @Override
     protected void spawnBreakParticles() {
         spawnBreakParticles(getVanillaState());
+    }
+
+    @Override
+    public float calculateBreakingDelta(PlayerEntity player) {
+        return calculateBreakingDelta(player, getVanillaState());
+    }
+
+    @Override
+    protected void playBreakSound() {
+        playBreakSound(getVanillaState());
     }
 }
