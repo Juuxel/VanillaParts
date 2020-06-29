@@ -75,4 +75,9 @@ public abstract class VanillaPart extends AbstractPart {
     public VoxelShape getCullingShape() {
         return getOutlineShape();
     }
+
+    @Override
+    protected void spawnBreakParticles() {
+        spawnBreakParticles(getVanillaState());
+    }
 }
