@@ -46,10 +46,6 @@ dependencies {
     modImplementation group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
     include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
 
-    //modImplementation "extra-pieces:extrapieces:$project.extrapieces"
-    //modRuntime "io.github.cottonmc:Jankson:$project.jankson" // for EP
-    //modRuntime "artificemc:artifice:$project.artifice"
-
     modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
 
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"

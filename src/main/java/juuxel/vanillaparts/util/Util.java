@@ -60,13 +60,12 @@ public final class Util {
      * @param context the multipart loot context
      * @return the created builder
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
     public static LootContext.Builder toBlockLootContext(LootContext context) {
         return new LootContext.Builder(context.getWorld())
                 .random(context.getRandom())
                 .luck(context.getLuck())
                 .parameter(LootContextParameters.BLOCK_STATE, context.get(LootContextParameters.BLOCK_STATE))
-                .parameter(LootContextParameters.POSITION, context.get(LootContextParameters.POSITION))
+                .parameter(LootContextParameters.ORIGIN, context.get(LootContextParameters.ORIGIN))
                 .parameter(LootContextParameters.TOOL, context.get(LootContextParameters.TOOL))
                 .optionalParameter(LootContextParameters.THIS_ENTITY, context.get(LootContextParameters.THIS_ENTITY))
                 .optionalParameter(LootContextParameters.BLOCK_ENTITY, context.get(LootContextParameters.BLOCK_ENTITY))

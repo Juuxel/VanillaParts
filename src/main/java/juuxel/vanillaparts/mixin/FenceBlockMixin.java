@@ -60,6 +60,6 @@ public class FenceBlockMixin extends HorizontalConnectingBlock implements FenceE
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block source, BlockPos neighborPos, boolean flag) {
         super.neighborUpdate(state, world, pos, source, neighborPos, flag);
-        replaced(state, state.getStateForNeighborUpdate(Util.compare(pos, neighborPos), world.getBlockState(neighborPos), world, pos, neighborPos), world, pos, 3);
+        replace(state, state.getStateForNeighborUpdate(Util.compare(pos, neighborPos), world.getBlockState(neighborPos), world, pos, neighborPos), world, pos, 3);
     }
 }
