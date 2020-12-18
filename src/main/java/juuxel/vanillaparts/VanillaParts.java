@@ -4,7 +4,6 @@
 
 package juuxel.vanillaparts;
 
-import juuxel.vanillaparts.compat.Compat;
 import juuxel.vanillaparts.part.VPartDefinitions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -18,7 +17,6 @@ public final class VanillaParts implements ModInitializer {
     @Override
     public void onInitialize() {
         VPartDefinitions.init();
-        Compat.init();
 
         // Register part placement tweak
         UseBlockCallback.EVENT.register(MultipartItemTweak.INSTANCE);
