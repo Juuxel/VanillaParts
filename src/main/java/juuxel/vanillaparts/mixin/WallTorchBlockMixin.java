@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(WallTorchBlock.class)
-public class WallTorchBlockMixin extends TorchBlockMixin {
+abstract class WallTorchBlockMixin extends TorchBlockMixin {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         return (Object) this == Blocks.WALL_TORCH ? Collections.singletonList(holder -> new TorchPart(VPartDefinitions.TORCH, holder, TorchPart.Facing.of(state.get(HorizontalFacingBlock.FACING)))) : null;

@@ -28,8 +28,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(FenceBlock.class)
-public class FenceBlockMixin extends HorizontalConnectingBlock implements FenceExtensions, NativeMultipart {
-    protected FenceBlockMixin(float f, float g, float h, float i, float j, Settings settings) {
+abstract class FenceBlockMixin extends HorizontalConnectingBlock implements FenceExtensions, NativeMultipart {
+    private FenceBlockMixin(float f, float g, float h, float i, float j, Settings settings) {
         super(f, g, h, i, j, settings);
     }
 

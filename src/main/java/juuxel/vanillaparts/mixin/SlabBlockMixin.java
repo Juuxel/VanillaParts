@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(SlabBlock.class)
-public class SlabBlockMixin extends Block implements NativeMultipart {
+abstract class SlabBlockMixin extends Block implements NativeMultipart {
     private SlabBlockMixin(Settings settings) {
         super(settings);
     }

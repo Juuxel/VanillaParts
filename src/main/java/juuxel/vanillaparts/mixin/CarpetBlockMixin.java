@@ -20,7 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(CarpetBlock.class)
-public abstract class CarpetBlockMixin implements NativeMultipart {
+abstract class CarpetBlockMixin implements NativeMultipart {
     @Shadow
     public abstract DyeColor getColor();
 

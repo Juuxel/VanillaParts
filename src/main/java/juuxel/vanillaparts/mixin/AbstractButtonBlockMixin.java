@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(AbstractButtonBlock.class)
-public class AbstractButtonBlockMixin extends WallMountedBlock implements NativeMultipart {
+abstract class AbstractButtonBlockMixin extends WallMountedBlock implements NativeMultipart {
     private AbstractButtonBlockMixin(Settings settings) {
         super(settings);
     }

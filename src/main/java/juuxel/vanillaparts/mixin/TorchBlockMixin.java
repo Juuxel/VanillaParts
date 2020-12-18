@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(TorchBlock.class)
-public class TorchBlockMixin implements NativeMultipart {
+abstract class TorchBlockMixin implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         return (Object) this == Blocks.TORCH ? Collections.singletonList(holder -> new TorchPart(VPartDefinitions.TORCH, holder, TorchPart.Facing.GROUND)) : null;

@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Mixin(LeverBlock.class)
-public class LeverBlockMixin extends WallMountedBlock implements NativeMultipart {
+abstract class LeverBlockMixin extends WallMountedBlock implements NativeMultipart {
     private LeverBlockMixin(Settings settings) {
         super(settings);
     }
