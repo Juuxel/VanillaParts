@@ -16,6 +16,7 @@ import net.minecraft.loot.context.LootContext;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 
@@ -43,6 +44,12 @@ public abstract class VanillaPart extends AbstractPart {
         ItemScatterer.spawn(world, pos, stacks);
         world.syncWorldEvent(2001, pos, Block.getRawIdFromState(getVanillaState()));
         this.holder.remove();
+    }
+
+    protected final void updateListeners() {
+        BlockPos pos = getPos();
+        BlockState multipartState = getWorld().getBlockState(pos);
+        getWorld().updateListeners(getPos(), multipartState, multipartState, 3);
     }
 
     @Override

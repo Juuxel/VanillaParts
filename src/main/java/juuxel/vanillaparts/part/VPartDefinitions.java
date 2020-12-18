@@ -34,6 +34,10 @@ public final class VPartDefinitions {
             VanillaParts.id("lever"), LeverPart::new,
             ((definition, holder, buffer, ctx) -> new LeverPart(definition, holder, buffer))
     );
+    public static final PartDefinition CAKE = new PartDefinition(
+            VanillaParts.id("cake"), CakePart::new,
+            ((definition, holder, buffer, ctx) -> new CakePart(definition, holder, buffer))
+    );
 
     private VPartDefinitions() {}
 
@@ -48,6 +52,7 @@ public final class VPartDefinitions {
         }
         register(TORCH);
         register(LEVER);
+        register(CAKE);
 
         // Add slab, button and fence parts
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {

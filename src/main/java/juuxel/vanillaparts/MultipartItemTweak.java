@@ -73,6 +73,8 @@ public enum MultipartItemTweak implements UseBlockCallback {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else if (block instanceof FenceBlock) {
                 offer = handleFences(world, hit, pos, block);
+            } else if (block == Blocks.CAKE) {
+                offer = handleSimple(world, pos, block, holder -> new CakePart(VPartDefinitions.CAKE, holder));
             } else {
                 for (Extension extension : extensions) {
                     offer = extension.handle(block, player, world, hand, hit, pos);
@@ -104,6 +106,14 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
     public static boolean isMissingContainer(World world, BlockPos pos) {
         return !(world.getBlockState(pos).getBlock() instanceof NativeMultipart) && MultipartUtil.get(world, pos) == null;
+    }
+
+    private MultipartContainer.PartOffer handleSimple(World world, BlockPos pos, Block block, MultipartContainer.MultipartCreator creator) {
+        if (!(block.getDefaultState().canPlaceAt(world, pos))) {
+            return null;
+        }
+
+        return MultipartUtil.offerNewPart(world, pos, creator);
     }
 
     private MultipartContainer.PartOffer handleCarpets(World world, BlockPos pos, Block block) {

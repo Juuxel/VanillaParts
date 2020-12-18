@@ -72,10 +72,4 @@ public abstract class WallMountedRedstonePart extends VanillaPart {
             props.setValue(this, MultipartProperties.getWeakRedstonePower(direction), power);
         }
     }
-
-    protected final void updateListeners() {
-        BlockPos pos = getPos();
-        BlockState multipartState = getWorld().getBlockState(pos);
-        getWorld().updateListeners(getPos(), multipartState, multipartState, 3);
-    }
 }

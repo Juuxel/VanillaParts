@@ -7,6 +7,7 @@
   "mixins": [
     "AbstractButtonBlockAccessor",
     "AbstractButtonBlockMixin",
+    "CakeBlockMixin",
     "CarpetBlockMixin",
     "FenceBlockMixin",
     "LeverBlockAccessor",
