@@ -15,7 +15,7 @@ public class DynamicVanillaModelKey extends VanillaModelKey {
     }
 
     public BlockState getState() {
-        return part.getVanillaState();
+        return part.getBlockState();
     }
 
     @Override

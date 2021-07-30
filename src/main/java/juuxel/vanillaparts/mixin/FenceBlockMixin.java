@@ -8,7 +8,7 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import juuxel.vanillaparts.part.FencePart;
-import juuxel.vanillaparts.part.VPartDefinitions;
+import juuxel.vanillaparts.part.VpParts;
 import juuxel.vanillaparts.util.FenceExtensions;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
@@ -36,7 +36,7 @@ abstract class FenceBlockMixin extends HorizontalConnectingBlock implements Fenc
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         return Collections.singletonList(holder -> new FencePart(
-                VPartDefinitions.FENCE_PARTS.get(this), holder,
+                VpParts.FENCE_PARTS.get(this), holder,
                 this, state.get(NORTH), state.get(EAST), state.get(SOUTH), state.get(WEST)
         ));
     }

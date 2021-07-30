@@ -9,14 +9,14 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.NetByteBuf;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 @FunctionalInterface
 public interface StatelessPartFactory extends PartDefinition.IPartNbtReader, PartDefinition.IPartNetLoader {
     AbstractPart createPart(PartDefinition def, MultipartHolder holder);
 
     @Override
-    default AbstractPart readFromNbt(PartDefinition def, MultipartHolder holder, CompoundTag tag) {
+    default AbstractPart readFromNbt(PartDefinition def, MultipartHolder holder, NbtCompound tag) {
         return createPart(def, holder);
     }
 

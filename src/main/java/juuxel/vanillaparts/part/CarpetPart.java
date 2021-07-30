@@ -4,10 +4,10 @@
 
 package juuxel.vanillaparts.part;
 
-import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,16 +30,17 @@ public class CarpetPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
-    public boolean canOverlapWith(AbstractPart other) {
-        return /*OverlappingPartRegistry.canOverlapWithCarpets(other.definition)*/ other instanceof FencePart;
+    public BlockState getBlockState() {
+        return VpParts.CARPETS.get(color).getDefaultState();
     }
 
     @Override
-    public BlockState getVanillaState() {
-        return VPartDefinitions.CARPETS.get(color).getDefaultState();
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.CARPETS);
+        builder.overlap(VpCategories.FENCES);
     }
 }

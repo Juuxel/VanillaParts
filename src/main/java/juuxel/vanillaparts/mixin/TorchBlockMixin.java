@@ -7,7 +7,7 @@ package juuxel.vanillaparts.mixin;
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import juuxel.vanillaparts.part.TorchPart;
-import juuxel.vanillaparts.part.VPartDefinitions;
+import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.TorchBlock;
@@ -22,6 +22,6 @@ import java.util.List;
 abstract class TorchBlockMixin implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
-        return (Object) this == Blocks.TORCH ? Collections.singletonList(holder -> new TorchPart(VPartDefinitions.TORCH, holder, TorchPart.Facing.GROUND)) : null;
+        return (Object) this == Blocks.TORCH ? Collections.singletonList(holder -> new TorchPart(VpParts.TORCH, holder, TorchPart.Facing.GROUND)) : null;
     }
 }

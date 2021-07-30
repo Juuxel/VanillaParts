@@ -14,14 +14,15 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
@@ -49,7 +50,7 @@ public class TorchPart extends VanillaPart {
         this.facing = facing;
     }
 
-    public TorchPart(PartDefinition definition, MultipartHolder holder, CompoundTag tag) {
+    public TorchPart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
         super(definition, holder);
         Facing facing;
         try {
@@ -87,7 +88,7 @@ public class TorchPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -102,7 +103,7 @@ public class TorchPart extends VanillaPart {
                 () -> {
                     World world = getWorld();
                     if (world.isClient && world.random.nextInt(10) == 0) {
-                        BlockState state = getVanillaState();
+                        BlockState state = getBlockState();
                         state.getBlock().randomDisplayTick(state, world, getPos(), world.random);
                     }
                 }
@@ -110,13 +111,13 @@ public class TorchPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return facing == Facing.GROUND ? Blocks.TORCH.getDefaultState() : Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.FACING, facing.getDirection());
     }
 
     @Override
-    public CompoundTag toTag() {
-        return DataFixUtils.make(new CompoundTag(), tag -> {
+    public NbtCompound toTag() {
+        return Util.with(new NbtCompound(), tag -> {
             tag.putString("Facing", facing.toString().toLowerCase(Locale.ROOT));
         });
     }
@@ -125,6 +126,11 @@ public class TorchPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeByte((byte) facing.ordinal());
+    }
+
+    @Override
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.TORCHES);
     }
 
     public enum Facing {

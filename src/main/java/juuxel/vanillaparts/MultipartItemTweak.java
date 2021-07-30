@@ -4,16 +4,38 @@
 
 package juuxel.vanillaparts;
 
-import alexiil.mc.lib.multipart.api.*;
-import juuxel.vanillaparts.part.*;
+import alexiil.mc.lib.multipart.api.AbstractPart;
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import alexiil.mc.lib.multipart.api.MultipartHolder;
+import alexiil.mc.lib.multipart.api.MultipartUtil;
+import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.part.ButtonPart;
+import juuxel.vanillaparts.part.CakePart;
+import juuxel.vanillaparts.part.CarpetPart;
+import juuxel.vanillaparts.part.FencePart;
+import juuxel.vanillaparts.part.LeverPart;
+import juuxel.vanillaparts.part.SlabPart;
+import juuxel.vanillaparts.part.TorchPart;
+import juuxel.vanillaparts.part.VpParts;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractButtonBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.DyedCarpetBlock;
+import net.minecraft.block.FenceBlock;
+import net.minecraft.block.LeverBlock;
+import net.minecraft.block.SlabBlock;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
@@ -61,20 +83,20 @@ public enum MultipartItemTweak implements UseBlockCallback {
             if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || block instanceof FenceBlock || checkers.invoker().test(block))) // slabs and fences do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement
 
-            if (block instanceof CarpetBlock) {
+            if (block instanceof DyedCarpetBlock) {
                 offer = handleCarpets(world, pos, block);
             } else if (block == Blocks.TORCH) {
                 offer = handleTorches(player, world, hand, hit, pos);
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
             } else if (block == Blocks.LEVER) {
-                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VPartDefinitions.LEVER, holder, face, facing, false));
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VpParts.LEVER, holder, face, facing, false));
             } else if (block instanceof AbstractButtonBlock) {
-                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VPartDefinitions.BUTTON_PARTS.get(block), holder, block, face, facing));
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VpParts.BUTTON_PARTS.get(block), holder, block, face, facing));
             } else if (block instanceof FenceBlock) {
                 offer = handleFences(world, hit, pos, block);
             } else if (block == Blocks.CAKE) {
-                offer = handleSimple(world, pos, block, holder -> new CakePart(VPartDefinitions.CAKE, holder));
+                offer = handleSimple(world, pos, block, holder -> new CakePart(VpParts.CAKE, holder));
             } else {
                 for (Extension extension : extensions) {
                     offer = extension.handle(block, player, world, hand, hit, pos);
@@ -89,7 +111,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
             if (offer != null) {
                 if (!world.isClient) {
                     offer.apply();
-                    if (!player.abilities.creativeMode) {
+                    if (!player.getAbilities().creativeMode) {
                         stack.decrement(1);
                     }
                 }
@@ -121,10 +143,10 @@ public enum MultipartItemTweak implements UseBlockCallback {
             return null;
         }
 
-        DyeColor color = ((CarpetBlock) block).getColor();
+        DyeColor color = ((DyedCarpetBlock) block).getDyeColor();
         return MultipartUtil.offerNewPart(
                 world, pos,
-                holder -> new CarpetPart(VPartDefinitions.CARPET_PARTS.get(color), holder, color)
+                holder -> new CarpetPart(VpParts.CARPET_PARTS.get(color), holder, color)
         );
     }
 
@@ -141,13 +163,13 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
         TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
         return MultipartUtil.offerNewPart(
-                world, pos, holder -> new TorchPart(VPartDefinitions.TORCH, holder, facing)
+                world, pos, holder -> new TorchPart(VpParts.TORCH, holder, facing)
         );
     }
 
     private MultipartContainer.PartOffer handleSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
-        if (!VPartDefinitions.SLAB_PARTS.containsKey(block)) return null;
-        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VPartDefinitions.SLAB_PARTS.get(block), holder, (SlabBlock) block, top));
+        if (!VpParts.SLAB_PARTS.containsKey(block)) return null;
+        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VpParts.SLAB_PARTS.get(block), holder, (SlabBlock) block, top));
     }
 
     private MultipartContainer.PartOffer handleAnySlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, BiFunction<MultipartHolder, Boolean, AbstractPart> factory) {
@@ -215,7 +237,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
         }
 
         MultipartContainer.PartOffer offer = null;
-        MultipartContainer.MultipartCreator creator = holder -> new FencePart(VPartDefinitions.FENCE_PARTS.get(block), holder, block);
+        MultipartContainer.MultipartCreator creator = holder -> new FencePart(VpParts.FENCE_PARTS.get(block), holder, block);
 
         if (!isMissingContainer(world, hit.getBlockPos())) {
             offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), creator);

@@ -11,7 +11,7 @@ import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
-import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.LeverBlockAccessor;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.BlockState;
@@ -19,7 +19,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -33,7 +33,7 @@ public class LeverPart extends WallMountedRedstonePart {
         super(definition, holder, face, facing, powered);
     }
 
-    public LeverPart(PartDefinition definition, MultipartHolder holder, CompoundTag tag) {
+    public LeverPart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
         this(definition, holder, readFace(tag.getInt("Face")), Direction.byId(tag.getInt("Facing")), tag.getBoolean("Powered"));
     }
 
@@ -42,8 +42,8 @@ public class LeverPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public CompoundTag toTag() {
-        return DataFixUtils.make(super.toTag(), tag -> {
+    public NbtCompound toTag() {
+        return Util.with(super.toTag(), tag -> {
             tag.putInt("Face", face.ordinal());
             tag.putInt("Facing", facing.getId());
             tag.putBoolean("Powered", powered);
@@ -59,7 +59,7 @@ public class LeverPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return Blocks.LEVER.getDefaultState()
                 .with(LeverBlock.FACE, face)
                 .with(LeverBlock.FACING, facing)
@@ -72,7 +72,7 @@ public class LeverPart extends WallMountedRedstonePart {
         updateRedstoneLevels();
         if (player.world.isClient) {
             if (powered) {
-                LeverBlockAccessor.callSpawnParticles(getVanillaState(), player.world, hit.getBlockPos(), 1f);
+                LeverBlockAccessor.callSpawnParticles(getBlockState(), player.world, hit.getBlockPos(), 1f);
             }
         } else {
             float pitch = powered ? 0.6f : 0.5f;
@@ -92,5 +92,11 @@ public class LeverPart extends WallMountedRedstonePart {
 
     private static WallMountLocation readFace(int i) {
         return Util.safeGet(WallMountLocation.values(), i);
+    }
+
+    @Override
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.LEVERS);
+        builder.add(VpCategories.REDSTONE_COMPONENTS);
     }
 }

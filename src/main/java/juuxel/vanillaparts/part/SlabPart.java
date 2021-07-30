@@ -12,12 +12,13 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
 import net.minecraft.block.*;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.shape.VoxelShape;
 
 public class SlabPart extends VanillaPart {
@@ -38,7 +39,7 @@ public class SlabPart extends VanillaPart {
         this.half = half;
     }
 
-    public SlabPart(PartDefinition definition, MultipartHolder holder, SlabBlock block, CompoundTag tag) {
+    public SlabPart(PartDefinition definition, MultipartHolder holder, SlabBlock block, NbtCompound tag) {
         this(definition, holder, block, tag.getBoolean("IsTop"));
     }
 
@@ -55,7 +56,7 @@ public class SlabPart extends VanillaPart {
 
     @Override
     public PartModelKey getModelKey() {
-        return new StaticVanillaModelKey(getVanillaState());
+        return new StaticVanillaModelKey(getBlockState());
     }
 
     @Override
@@ -68,13 +69,13 @@ public class SlabPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState().with(SlabBlock.TYPE, half == BlockHalf.TOP ? SlabType.TOP : SlabType.BOTTOM);
     }
 
     @Override
-    public CompoundTag toTag() {
-        return DataFixUtils.make(new CompoundTag(), tag -> {
+    public NbtCompound toTag() {
+        return DataFixUtils.make(new NbtCompound(), tag -> {
             tag.putBoolean("IsTop", half == BlockHalf.TOP);
         });
     }
@@ -83,5 +84,10 @@ public class SlabPart extends VanillaPart {
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
         buffer.writeBoolean(half == BlockHalf.TOP);
+    }
+
+    @Override
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.SLABS);
     }
 }

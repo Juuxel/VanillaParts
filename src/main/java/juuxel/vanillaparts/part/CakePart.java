@@ -12,13 +12,14 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.InvalidInputDataException;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.NbtKeys;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CakeBlock;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -44,7 +45,7 @@ public class CakePart extends VanillaPart {
         this(definition, holder, 0);
     }
 
-    public CakePart(PartDefinition definition, MultipartHolder holder, CompoundTag tag) {
+    public CakePart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
         this(definition, holder, tag.getInt(NbtKeys.BITES));
     }
 
@@ -53,13 +54,13 @@ public class CakePart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return Blocks.CAKE.getDefaultState().with(CakeBlock.BITES, bites);
     }
 
     @Override
     public VoxelShape getShape() {
-        return getVanillaState().getOutlineShape(getWorld(), getPos());
+        return getBlockState().getOutlineShape(getWorld(), getPos());
     }
 
     @Override
@@ -88,7 +89,7 @@ public class CakePart extends VanillaPart {
     }
 
     @Override
-    public CompoundTag toTag() {
+    public NbtCompound toTag() {
         return DataFixUtils.make(super.toTag(), tag -> tag.putInt(NbtKeys.BITES, bites));
     }
 
@@ -100,5 +101,10 @@ public class CakePart extends VanillaPart {
     @Override
     public void readRenderData(NetByteBuf buffer, IMsgReadCtx ctx) throws InvalidInputDataException {
         super.readRenderData(buffer, ctx);
+    }
+
+    @Override
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.CAKE);
     }
 }

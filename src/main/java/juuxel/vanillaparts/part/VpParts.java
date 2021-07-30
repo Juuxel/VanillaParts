@@ -15,7 +15,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public final class VPartDefinitions {
+public final class VpParts {
     // Block maps
     public static final ImmutableMap<DyeColor, Block> CARPETS;
 
@@ -39,7 +39,7 @@ public final class VPartDefinitions {
             ((definition, holder, buffer, ctx) -> new CakePart(definition, holder, buffer))
     );
 
-    private VPartDefinitions() {}
+    private VpParts() {}
 
     private static void register(PartDefinition def) {
         PartDefinition.PARTS.put(def.identifier, def);

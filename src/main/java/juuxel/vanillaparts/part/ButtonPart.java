@@ -14,6 +14,7 @@ import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.AbstractButtonBlockAccessor;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.*;
@@ -21,7 +22,8 @@ import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
@@ -41,7 +43,7 @@ public class ButtonPart extends WallMountedRedstonePart {
         this.buttonBlock = (AbstractButtonBlockAccessor) buttonBlock;
     }
 
-    public ButtonPart(PartDefinition definition, MultipartHolder holder, Block buttonBlock, CompoundTag tag) {
+    public ButtonPart(PartDefinition definition, MultipartHolder holder, Block buttonBlock, NbtCompound tag) {
         this(definition, holder, buttonBlock, readFace(tag.getInt("Face")), Direction.byId(tag.getInt("Facing")));
         this.powered = tag.getBoolean("Powered");
         this.timer = tag.getInt("Timer");
@@ -52,7 +54,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public CompoundTag toTag() {
+    public NbtCompound toTag() {
         return DataFixUtils.make(super.toTag(), tag -> {
             tag.putInt("Face", face.ordinal());
             tag.putInt("Facing", facing.getId());
@@ -69,7 +71,7 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState()
                 .with(AbstractButtonBlock.FACE, face)
                 .with(AbstractButtonBlock.FACING, facing)
@@ -137,5 +139,11 @@ public class ButtonPart extends WallMountedRedstonePart {
 
     private static WallMountLocation readFace(int i) {
         return Util.safeGet(WallMountLocation.values(), i);
+    }
+
+    @Override
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.BUTTONS);
+        builder.add(VpCategories.REDSTONE_COMPONENTS);
     }
 }

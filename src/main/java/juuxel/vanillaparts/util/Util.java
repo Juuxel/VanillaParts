@@ -53,22 +53,4 @@ public final class Util {
         else if (y == -1) return Direction.DOWN;
         else return Direction.UP;
     }
-
-    /**
-     * Converts a multipart loot context to a block loot context builder.
-     *
-     * @param context the multipart loot context
-     * @return the created builder
-     */
-    public static LootContext.Builder toBlockLootContext(LootContext context) {
-        return new LootContext.Builder(context.getWorld())
-                .random(context.getRandom())
-                .luck(context.getLuck())
-                .parameter(LootContextParameters.BLOCK_STATE, context.get(LootContextParameters.BLOCK_STATE))
-                .parameter(LootContextParameters.ORIGIN, context.get(LootContextParameters.ORIGIN))
-                .parameter(LootContextParameters.TOOL, context.get(LootContextParameters.TOOL))
-                .optionalParameter(LootContextParameters.THIS_ENTITY, context.get(LootContextParameters.THIS_ENTITY))
-                .optionalParameter(LootContextParameters.BLOCK_ENTITY, context.get(LootContextParameters.BLOCK_ENTITY))
-                .optionalParameter(LootContextParameters.EXPLOSION_RADIUS, context.get(LootContextParameters.EXPLOSION_RADIUS));
-    }
 }

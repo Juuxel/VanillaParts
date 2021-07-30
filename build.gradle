@@ -1,17 +1,15 @@
 plugins {
-    id 'fabric-loom' version '0.5-SNAPSHOT'
+    id 'fabric-loom' version '0.9-SNAPSHOT'
     id 'maven-publish'
+    // TODO: Licenser and LQF
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
-version = project.mod_version + "+$project.minecraft_version"
+version = project.mod_version + '+' + project.minecraft_version
 group = project.maven_group
-
-minecraft {
-}
 
 repositories {
     maven {
@@ -20,48 +18,37 @@ repositories {
     }
 
     maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven"
-    }
-
-    maven {
         name = "Cotton"
-        url = "http://server.bbkr.space:8081/artifactory/libs-release"
-    }
-
-    maven {
-        name = "Swordglowsblue"
-        url = "https://maven.swordglowsblue.com"
+        url = "https://server.bbkr.space/artifactory/libs-release"
     }
 }
 
 dependencies {
     //to change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    modImplementation group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
-    include group: "alexiil.mc.lib", name: "libmultipart-all", version: project.libmultipart
+    modImplementation include("io.github.juuxel:BlocksToParts:$project.blockstoparts")
 
-    modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
+    //modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
 
+    // For LibMultipart
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 }
 
 processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include "fabric.mod.json"
+    filesMatching("fabric.mod.json") {
         expand "version": project.version
     }
+}
 
-    from(sourceSets.main.resources.srcDirs) {
-        exclude "fabric.mod.json"
-    }
+java {
+    withSourcesJar()
 }
 
 // ensure that the encoding is set to UTF-8, no matter what the system default is
@@ -69,14 +56,7 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
-    from sourceSets.main.allSource
+    options.release = 16
 }
 
 jar {
@@ -95,11 +75,5 @@ publishing {
                 builtBy remapSourcesJar
             }
         }
-    }
-
-    // select the repositories you want to publish to
-    repositories {
-        // uncomment to publish to the local maven
-        // mavenLocal()
     }
 }

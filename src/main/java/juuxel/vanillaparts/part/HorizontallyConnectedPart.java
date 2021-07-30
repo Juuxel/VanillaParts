@@ -18,7 +18,7 @@ import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.HorizontalConnectingBlock;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
@@ -71,7 +71,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     @Override
-    public BlockState getVanillaState() {
+    public BlockState getBlockState() {
         return block.getDefaultState()
                 .with(HorizontalConnectingBlock.NORTH, north)
                 .with(HorizontalConnectingBlock.EAST, east)
@@ -81,12 +81,12 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
 
     @Override
     public VoxelShape getOutlineShape() {
-        return getVanillaState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getOutlineShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override
     public VoxelShape getCollisionShape() {
-        return getVanillaState().getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
+        return getBlockState().getCollisionShape(EmptyBlockView.INSTANCE, BlockPos.ORIGIN);
     }
 
     @Override
@@ -197,7 +197,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     }
 
     @Override
-    public CompoundTag toTag() {
+    public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
             tag.putBoolean("North", north);
             tag.putBoolean("East", east);

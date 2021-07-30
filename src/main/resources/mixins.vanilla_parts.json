@@ -7,7 +7,7 @@
     "AbstractButtonBlockAccessor",
     "AbstractButtonBlockMixin",
     "CakeBlockMixin",
-    "CarpetBlockMixin",
+    "DyedCarpetBlockMixin",
     "FenceBlockMixin",
     "LeverBlockAccessor",
     "LeverBlockMixin",

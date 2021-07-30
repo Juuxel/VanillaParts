@@ -4,9 +4,9 @@
 
 package juuxel.vanillaparts.part;
 
-import alexiil.mc.lib.multipart.api.AbstractPart;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
+import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.util.FenceExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -41,7 +41,8 @@ public class FencePart extends HorizontallyConnectedPart {
     }
 
     @Override
-    public boolean canOverlapWith(AbstractPart other) {
-        return other instanceof CarpetPart;
+    protected void addCategories(CategorySet.Builder builder) {
+        builder.add(VpCategories.FENCES);
+        builder.overlap(VpCategories.CARPETS);
     }
 }

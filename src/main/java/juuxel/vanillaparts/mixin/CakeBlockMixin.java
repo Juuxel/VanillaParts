@@ -3,7 +3,7 @@ package juuxel.vanillaparts.mixin;
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
 import juuxel.vanillaparts.part.CakePart;
-import juuxel.vanillaparts.part.VPartDefinitions;
+import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CakeBlock;
@@ -21,7 +21,7 @@ abstract class CakeBlockMixin implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos blockPos, BlockState blockState) {
         if ((Object) this == Blocks.CAKE) {
-            return Collections.singletonList(holder -> new CakePart(VPartDefinitions.CAKE, holder, blockState.get(CakeBlock.BITES)));
+            return Collections.singletonList(holder -> new CakePart(VpParts.CAKE, holder, blockState.get(CakeBlock.BITES)));
         }
 
         return null;
