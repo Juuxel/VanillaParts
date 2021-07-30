@@ -6,13 +6,20 @@ package juuxel.vanillaparts.part;
 
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
+import alexiil.mc.lib.net.IMsgReadCtx;
+import alexiil.mc.lib.net.InvalidInputDataException;
+import alexiil.mc.lib.net.NetByteBuf;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.util.FenceExtensions;
+import juuxel.vanillaparts.util.NbtKeys;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 
 public class FencePart extends HorizontallyConnectedPart {
@@ -25,6 +32,26 @@ public class FencePart extends HorizontallyConnectedPart {
 
     public FencePart(PartDefinition definition, MultipartHolder holder, Block fence, boolean north, boolean east, boolean south, boolean west) {
         super(definition, holder, fence, north, east, south, west);
+    }
+
+    public static FencePart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
+        Block fence = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
+        boolean north = nbt.getBoolean("North");
+        boolean east = nbt.getBoolean("East");
+        boolean south = nbt.getBoolean("South");
+        boolean west = nbt.getBoolean("West");
+
+        return new FencePart(definition, holder, fence, north, east, south, west);
+    }
+
+    public static FencePart fromBuf(PartDefinition definition, MultipartHolder holder, NetByteBuf buf, IMsgReadCtx ctx) throws InvalidInputDataException {
+        Block fence = Registry.BLOCK.get(buf.readIdentifierSafe());
+        boolean north = buf.readBoolean();
+        boolean east = buf.readBoolean();
+        boolean south = buf.readBoolean();
+        boolean west = buf.readBoolean();
+
+        return new FencePart(definition, holder, fence, north, east, south, west);
     }
 
     @Override

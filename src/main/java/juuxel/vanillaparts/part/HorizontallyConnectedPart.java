@@ -14,6 +14,7 @@ import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.*;
 import com.google.common.collect.ImmutableMap;
 import juuxel.blockstoparts.api.model.DynamicVanillaModelKey;
+import juuxel.vanillaparts.util.NbtKeys;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,6 +24,7 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.EmptyBlockView;
@@ -199,6 +201,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     @Override
     public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
+            tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
             tag.putBoolean("North", north);
             tag.putBoolean("East", east);
             tag.putBoolean("South", south);
@@ -209,6 +212,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     @Override
     public void writeCreationData(NetByteBuf buf, IMsgWriteCtx ctx) {
         super.writeCreationData(buf, ctx);
+        buf.writeIdentifier(Registry.BLOCK.getId(block));
         buf.writeBoolean(north).writeBoolean(east).writeBoolean(south).writeBoolean(west);
     }
 }

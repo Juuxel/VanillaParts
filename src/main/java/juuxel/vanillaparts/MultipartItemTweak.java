@@ -239,7 +239,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
         }
 
         MultipartContainer.PartOffer offer = null;
-        MultipartContainer.MultipartCreator creator = holder -> new FencePart(VpParts.FENCE_PARTS.get(block), holder, block);
+        MultipartContainer.MultipartCreator creator = holder -> new FencePart(VpParts.FENCE, holder, block);
 
         if (!isMissingContainer(world, hit.getBlockPos())) {
             offer = MultipartUtil.offerNewPart(world, hit.getBlockPos(), creator);
