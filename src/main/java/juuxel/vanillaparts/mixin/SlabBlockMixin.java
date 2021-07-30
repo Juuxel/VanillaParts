@@ -6,6 +6,7 @@ package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.SlabPart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.Block;
@@ -27,6 +28,7 @@ abstract class SlabBlockMixin extends Block implements NativeMultipart {
 
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        if (Exclusions.isExcluded(state)) return null;
         SlabType type = state.get(SlabBlock.TYPE);
         if (type == SlabType.DOUBLE) return null;
         return Collections.singletonList(holder -> new SlabPart(VpParts.SLAB_PARTS.get(this), holder, (SlabBlock) (Object) this, type == SlabType.TOP));

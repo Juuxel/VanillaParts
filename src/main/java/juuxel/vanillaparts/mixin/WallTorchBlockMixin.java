@@ -5,6 +5,7 @@
 package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.TorchPart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
@@ -22,6 +23,7 @@ import java.util.List;
 abstract class WallTorchBlockMixin extends TorchBlockMixin {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        if (Exclusions.isExcluded(state)) return null;
         return (Object) this == Blocks.WALL_TORCH ? Collections.singletonList(holder -> new TorchPart(VpParts.TORCH, holder, TorchPart.Facing.of(state.get(HorizontalFacingBlock.FACING)))) : null;
     }
 }

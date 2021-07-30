@@ -6,6 +6,7 @@ package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.ButtonPart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.AbstractButtonBlock;
@@ -26,6 +27,7 @@ abstract class AbstractButtonBlockMixin extends WallMountedBlock implements Nati
 
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        if (Exclusions.isExcluded(state)) return null;
         return Collections.singletonList(holder -> new ButtonPart(VpParts.BUTTON_PARTS.get(this), holder, this, state.get(FACE), state.get(FACING)));
     }
 }

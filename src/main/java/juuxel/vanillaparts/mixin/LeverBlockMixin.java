@@ -6,6 +6,7 @@ package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.LeverPart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
@@ -26,6 +27,7 @@ abstract class LeverBlockMixin extends WallMountedBlock implements NativeMultipa
 
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        if (Exclusions.isExcluded(state)) return null;
         return Collections.singletonList(holder -> new LeverPart(VpParts.LEVER, holder, state.get(FACE), state.get(FACING), state.get(LeverBlock.POWERED)));
     }
 }

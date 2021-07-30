@@ -9,6 +9,7 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.ButtonPart;
 import juuxel.vanillaparts.part.CakePart;
 import juuxel.vanillaparts.part.CarpetPart;
@@ -74,13 +75,12 @@ public enum MultipartItemTweak implements UseBlockCallback {
     public ActionResult interact(PlayerEntity player, World world, Hand hand, BlockHitResult hit) {
         ItemStack stack = player.getStackInHand(hand);
         Item item = stack.getItem();
-        if (item instanceof BlockItem) {
-            BlockItem bi = (BlockItem) item;
+        if (item instanceof BlockItem bi) {
             Block block = bi.getBlock();
+            if (Exclusions.isExcluded(block)) return ActionResult.PASS;
+
             BlockPos pos = hit.getBlockPos().offset(hit.getSide());
             MultipartContainer.PartOffer offer = null;
-
-            // TODO 1.17: Gate behind a tag (also in all of the NativeMultipart mixins) and BlockEntityProvider
 
             if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || block instanceof FenceBlock || checkers.invoker().test(block))) // slabs and fences do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement

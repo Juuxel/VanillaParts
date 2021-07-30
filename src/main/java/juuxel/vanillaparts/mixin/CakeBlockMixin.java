@@ -2,6 +2,7 @@ package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.NativeMultipart;
+import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.CakePart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
@@ -19,9 +20,11 @@ import java.util.List;
 abstract class CakeBlockMixin implements NativeMultipart {
     @Nullable
     @Override
-    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos blockPos, BlockState blockState) {
+    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
+        if (Exclusions.isExcluded(state)) return null;
+
         if ((Object) this == Blocks.CAKE) {
-            return Collections.singletonList(holder -> new CakePart(VpParts.CAKE, holder, blockState.get(CakeBlock.BITES)));
+            return Collections.singletonList(holder -> new CakePart(VpParts.CAKE, holder, state.get(CakeBlock.BITES)));
         }
 
         return null;
