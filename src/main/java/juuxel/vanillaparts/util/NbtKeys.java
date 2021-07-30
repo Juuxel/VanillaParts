@@ -6,4 +6,5 @@ package juuxel.vanillaparts.util;
 
 public final class NbtKeys {
     public static final String BITES = "Bites";
+    // TODO 1.17: collect all NBT keys here
 }

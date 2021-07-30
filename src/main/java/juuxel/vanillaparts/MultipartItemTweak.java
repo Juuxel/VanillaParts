@@ -80,6 +80,8 @@ public enum MultipartItemTweak implements UseBlockCallback {
             BlockPos pos = hit.getBlockPos().offset(hit.getSide());
             MultipartContainer.PartOffer offer = null;
 
+            // TODO 1.17: Gate behind a tag (also in all of the NativeMultipart mixins) and BlockEntityProvider
+
             if (isMissingContainer(world, pos) && !(block instanceof SlabBlock || block instanceof FenceBlock || checkers.invoker().test(block))) // slabs and fences do custom checking
                 return ActionResult.PASS; // Revert to vanilla placement
 
