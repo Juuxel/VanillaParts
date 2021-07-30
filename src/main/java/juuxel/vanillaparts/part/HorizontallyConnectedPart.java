@@ -13,7 +13,7 @@ import alexiil.mc.lib.multipart.api.event.PartRemovedEvent;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import alexiil.mc.lib.net.*;
 import com.google.common.collect.ImmutableMap;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
+import juuxel.blockstoparts.api.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

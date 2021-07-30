@@ -8,7 +8,7 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
 import juuxel.blockstoparts.api.category.CategorySet;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.DyeColor;

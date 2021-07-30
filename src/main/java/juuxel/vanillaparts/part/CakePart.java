@@ -13,7 +13,7 @@ import alexiil.mc.lib.net.InvalidInputDataException;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
 import juuxel.blockstoparts.api.category.CategorySet;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
+import juuxel.blockstoparts.api.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.NbtKeys;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

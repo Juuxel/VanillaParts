@@ -9,7 +9,7 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import juuxel.vanillaparts.part.model.DynamicVanillaModelKey;
+import juuxel.blockstoparts.api.model.DynamicVanillaModelKey;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;

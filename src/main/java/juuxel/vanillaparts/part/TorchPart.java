@@ -15,7 +15,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import juuxel.blockstoparts.api.category.CategorySet;
-import juuxel.vanillaparts.part.model.StaticVanillaModelKey;
+import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
