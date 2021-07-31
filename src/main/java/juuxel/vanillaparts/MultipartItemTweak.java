@@ -4,11 +4,7 @@
 
 package juuxel.vanillaparts;
 
-import alexiil.mc.lib.multipart.api.AbstractPart;
-import alexiil.mc.lib.multipart.api.MultipartContainer;
-import alexiil.mc.lib.multipart.api.MultipartHolder;
-import alexiil.mc.lib.multipart.api.MultipartUtil;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
+import alexiil.mc.lib.multipart.api.*;
 import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.ButtonPart;
 import juuxel.vanillaparts.part.CakePart;
@@ -88,7 +84,9 @@ public enum MultipartItemTweak implements UseBlockCallback {
             if (block instanceof DyedCarpetBlock) {
                 offer = handleCarpets(world, pos, block);
             } else if (block == Blocks.TORCH) {
-                offer = handleTorches(player, world, hand, hit, pos);
+                offer = handleTorches(player, world, hand, hit, pos, VpParts.TORCH, Blocks.TORCH, Blocks.WALL_TORCH);
+            }else if (block == Blocks.SOUL_TORCH) {
+                offer = handleTorches(player, world, hand, hit, pos, VpParts.SOUL_TORCH, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH);
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
             } else if (block == Blocks.LEVER) {
@@ -152,20 +150,20 @@ public enum MultipartItemTweak implements UseBlockCallback {
         );
     }
 
-    private MultipartContainer.PartOffer handleTorches(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos) {
+    private MultipartContainer.PartOffer handleTorches(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, PartDefinition definition, Block groundBlock, Block wallBlock) {
         if (hit.getSide().getAxis().isHorizontal()) {
             ItemPlacementContext ctx = new ItemPlacementContext(new ItemUsageContext(player, hand, hit));
-            BlockState torchState = Blocks.WALL_TORCH.getPlacementState(ctx);
+            BlockState torchState = wallBlock.getPlacementState(ctx);
             if (torchState == null || !torchState.canPlaceAt(world, pos)) {
                 return null;
             }
-        } else if (!Blocks.TORCH.getDefaultState().canPlaceAt(world, pos)) {
+        } else if (!groundBlock.getDefaultState().canPlaceAt(world, pos)) {
             return null;
         }
 
         TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
         return MultipartUtil.offerNewPart(
-                world, pos, holder -> new TorchPart(VpParts.TORCH, holder, facing)
+                world, pos, holder -> new TorchPart(definition, holder, groundBlock, wallBlock, facing)
         );
     }
 

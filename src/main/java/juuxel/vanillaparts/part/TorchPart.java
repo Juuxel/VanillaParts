@@ -16,6 +16,8 @@ import alexiil.mc.lib.net.NetByteBuf;
 import com.google.common.collect.ImmutableMap;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
+import juuxel.vanillaparts.util.NbtKeys;
+import juuxel.vanillaparts.util.NbtUtil;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,16 +25,15 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.StringIdentifiable;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
 
-import java.util.Locale;
-
 public class TorchPart extends VanillaPart {
     private static final ImmutableMap<Facing, VoxelShape> SHAPES;
+    private final Block block;
     private final Facing facing;
 
     static {
@@ -45,25 +46,18 @@ public class TorchPart extends VanillaPart {
         );
     }
 
-    public TorchPart(PartDefinition definition, MultipartHolder holder, Facing facing) {
+    public TorchPart(PartDefinition definition, MultipartHolder holder, Block groundBlock, Block wallBlock, Facing facing) {
         super(definition, holder);
+        this.block = facing == Facing.GROUND ? groundBlock : wallBlock;
         this.facing = facing;
     }
 
-    public TorchPart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
-        super(definition, holder);
-        Facing facing;
-        try {
-            facing = Facing.valueOf(tag.getString("Facing").toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            facing = Facing.GROUND;
-        }
-        this.facing = facing;
+    public static PartDefinition.IPartNbtReader fromNbt(Block groundBlock, Block wallBlock) {
+        return (definition, holder, nbt) -> new TorchPart(definition, holder, groundBlock, wallBlock, NbtUtil.getEnum(nbt, NbtKeys.FACING, Facing.class));
     }
 
-    public TorchPart(PartDefinition definition, MultipartHolder holder, byte facing) {
-        super(definition, holder);
-        this.facing = Facing.values()[MathHelper.clamp(facing, 0, 4)];
+    public static PartDefinition.IPartNetLoader fromBuf(Block groundBlock, Block wallBlock) {
+        return (definition, holder, buf, ctx) -> new TorchPart(definition, holder, groundBlock, wallBlock, buf.readEnumConstant(Facing.class));
     }
 
     @Override
@@ -96,7 +90,7 @@ public class TorchPart extends VanillaPart {
         super.onAdded(bus);
         bus.addListener(
                 this, PartAddedEvent.class,
-                event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, 15)
+                event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, getBlockState().getLuminance())
         );
         bus.addContextlessListener(
                 this, PartTickEvent.class,
@@ -112,20 +106,19 @@ public class TorchPart extends VanillaPart {
 
     @Override
     public BlockState getBlockState() {
-        return facing == Facing.GROUND ? Blocks.TORCH.getDefaultState() : Blocks.WALL_TORCH.getDefaultState().with(WallTorchBlock.FACING, facing.getDirection());
+        return facing == Facing.GROUND ? block.getDefaultState() : block.getDefaultState().with(WallTorchBlock.FACING, facing.getDirection());
     }
 
     @Override
     public NbtCompound toTag() {
         return Util.with(new NbtCompound(), tag -> {
-            tag.putString("Facing", facing.toString().toLowerCase(Locale.ROOT));
+            NbtUtil.putEnum(tag, NbtKeys.FACING, facing);
         });
     }
 
     @Override
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
-        super.writeCreationData(buffer, ctx);
-        buffer.writeByte((byte) facing.ordinal());
+        buffer.writeEnumConstant(facing);
     }
 
     @Override
@@ -133,21 +126,28 @@ public class TorchPart extends VanillaPart {
         builder.add(VpCategories.TORCHES);
     }
 
-    public enum Facing {
-        GROUND(Direction.DOWN),
-        NORTH(Direction.NORTH),
-        EAST(Direction.EAST),
-        SOUTH(Direction.SOUTH),
-        WEST(Direction.WEST);
+    public enum Facing implements StringIdentifiable {
+        GROUND(Direction.DOWN, "ground"),
+        NORTH(Direction.NORTH, "north"),
+        EAST(Direction.EAST, "east"),
+        SOUTH(Direction.SOUTH, "south"),
+        WEST(Direction.WEST, "west");
 
         private final Direction direction;
+        private final String id;
 
-        Facing(Direction direction) {
+        Facing(Direction direction, String id) {
             this.direction = direction;
+            this.id = id;
         }
 
         public Direction getDirection() {
             return direction;
+        }
+
+        @Override
+        public String asString() {
+            return id;
         }
 
         public static Facing of(Direction direction) {

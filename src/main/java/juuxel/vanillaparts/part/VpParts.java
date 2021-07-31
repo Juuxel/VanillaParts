@@ -22,8 +22,12 @@ public final class VpParts {
     // Parts
     // TODO 1.17: Standardise everything to use fromNbt and fromBuf
     public static final PartDefinition TORCH = new PartDefinition(
-            VanillaParts.id("torch"), TorchPart::new,
-            (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
+            VanillaParts.id("torch"), TorchPart.fromNbt(Blocks.TORCH, Blocks.WALL_TORCH),
+            TorchPart.fromBuf(Blocks.TORCH, Blocks.WALL_TORCH)
+    );
+    public static final PartDefinition SOUL_TORCH = new PartDefinition(
+            VanillaParts.id("soul_torch"), TorchPart.fromNbt(Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH),
+            TorchPart.fromBuf(Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH)
     );
     public static final PartDefinition LEVER = new PartDefinition(
             VanillaParts.id("lever"), LeverPart::new,
@@ -54,6 +58,7 @@ public final class VpParts {
         register(FENCE);
         register(SLAB);
         register(BUTTON);
+        register(SOUL_TORCH);
     }
 
     static {

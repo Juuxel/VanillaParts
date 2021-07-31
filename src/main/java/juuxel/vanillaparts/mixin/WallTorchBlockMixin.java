@@ -10,7 +10,6 @@ import juuxel.vanillaparts.part.TorchPart;
 import juuxel.vanillaparts.part.VpParts;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.HorizontalFacingBlock;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -24,6 +23,14 @@ abstract class WallTorchBlockMixin extends TorchBlockMixin {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         if (Exclusions.isExcluded(state)) return null;
-        return (Object) this == Blocks.WALL_TORCH ? Collections.singletonList(holder -> new TorchPart(VpParts.TORCH, holder, TorchPart.Facing.of(state.get(HorizontalFacingBlock.FACING)))) : null;
+        MultipartContainer.MultipartCreator creator = null;
+
+        if ((Object) this == Blocks.WALL_TORCH) {
+            creator = holder -> new TorchPart(VpParts.TORCH, holder, Blocks.TORCH, Blocks.WALL_TORCH, TorchPart.Facing.of(state.get(WallTorchBlock.FACING)));
+        } else if ((Object) this == Blocks.SOUL_WALL_TORCH) {
+            creator = holder -> new TorchPart(VpParts.SOUL_TORCH, holder, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH, TorchPart.Facing.of(state.get(WallTorchBlock.FACING)));
+        }
+
+        return creator != null ? Collections.singletonList(creator) : null;
     }
 }

@@ -24,6 +24,14 @@ abstract class TorchBlockMixin implements NativeMultipart {
     @Override
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         if (Exclusions.isExcluded(state)) return null;
-        return (Object) this == Blocks.TORCH ? Collections.singletonList(holder -> new TorchPart(VpParts.TORCH, holder, TorchPart.Facing.GROUND)) : null;
+        MultipartContainer.MultipartCreator creator = null;
+
+        if ((Object) this == Blocks.TORCH) {
+            creator = holder -> new TorchPart(VpParts.TORCH, holder, Blocks.TORCH, Blocks.WALL_TORCH, TorchPart.Facing.GROUND);
+        } else if ((Object) this == Blocks.SOUL_TORCH) {
+            creator = holder -> new TorchPart(VpParts.SOUL_TORCH, holder, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH, TorchPart.Facing.GROUND);
+        }
+
+        return creator != null ? Collections.singletonList(creator) : null;
     }
 }
