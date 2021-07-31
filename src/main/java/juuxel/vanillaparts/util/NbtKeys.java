@@ -7,5 +7,6 @@ package juuxel.vanillaparts.util;
 public final class NbtKeys {
     public static final String BITES = "Bites";
     public static final String BLOCK_ID = "BlockId";
+    public static final String IS_TOP = "IsTop";
     // TODO 1.17: collect all NBT keys here
 }

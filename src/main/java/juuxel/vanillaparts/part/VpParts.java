@@ -26,6 +26,7 @@ public final class VpParts {
     public static final Map<Block, PartDefinition> BUTTON_PARTS = new HashMap<>();
 
     // Parts
+    // TODO 1.17: Standardise everything to use fromNbt and fromBuf
     public static final PartDefinition TORCH = new PartDefinition(
             VanillaParts.id("torch"), TorchPart::new,
             (definition, holder, buffer, ctx) -> new TorchPart(definition, holder, buffer.readByte())
@@ -39,6 +40,7 @@ public final class VpParts {
             ((definition, holder, buffer, ctx) -> new CakePart(definition, holder, buffer))
     );
     public static final PartDefinition FENCE = new PartDefinition(VanillaParts.id("fence"), FencePart::fromNbt, FencePart::fromBuf);
+    public static final PartDefinition SLAB = new PartDefinition(VanillaParts.id("slab"), SlabPart::fromNbt, SlabPart::fromBuf);
 
     private VpParts() {}
 
@@ -55,18 +57,11 @@ public final class VpParts {
         register(LEVER);
         register(CAKE);
         register(FENCE);
+        register(SLAB);
 
         // Add slab, button and fence parts
         Util.visitRegistry(Registry.BLOCK, (id, block) -> {
-            if (block instanceof SlabBlock) {
-                PartDefinition def = new PartDefinition(
-                        VanillaParts.id(id.getNamespace() + "/" + id.getPath()),
-                        (definition, holder, tag) -> new SlabPart(definition, holder, (SlabBlock) block, tag),
-                        (definition, holder, buf, ctx) -> new SlabPart(definition, holder, (SlabBlock) block, buf.readBoolean())
-                );
-                register(def);
-                SLAB_PARTS.put(block, def);
-            } else if (block instanceof AbstractButtonBlock) {
+            if (block instanceof AbstractButtonBlock) {
                 PartDefinition def = new PartDefinition(
                         VanillaParts.id(id.getNamespace() + "/" + id.getPath()),
                         (definition, holder, tag) -> new ButtonPart(definition, holder, block, tag),
