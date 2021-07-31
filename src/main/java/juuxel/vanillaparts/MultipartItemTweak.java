@@ -94,7 +94,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
             } else if (block == Blocks.LEVER) {
                 offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new LeverPart(VpParts.LEVER, holder, face, facing, false));
             } else if (block instanceof AbstractButtonBlock) {
-                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VpParts.BUTTON_PARTS.get(block), holder, block, face, facing));
+                offer = handleWallMounted(player, world, hand, hit, pos, block, (holder, face, facing) -> new ButtonPart(VpParts.BUTTON, holder, block, face, facing));
             } else if (block instanceof FenceBlock) {
                 offer = handleFences(world, hit, pos, block);
             } else if (block == Blocks.CAKE) {
@@ -170,8 +170,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
     }
 
     private MultipartContainer.PartOffer handleSlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block) {
-        if (!VpParts.SLAB_PARTS.containsKey(block)) return null;
-        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VpParts.SLAB_PARTS.get(block), holder, (SlabBlock) block, top));
+        return handleAnySlabs(player, world, hand, hit, pos, block, (holder, top) -> new SlabPart(VpParts.SLAB, holder, (SlabBlock) block, top));
     }
 
     private MultipartContainer.PartOffer handleAnySlabs(PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos, Block block, BiFunction<MultipartHolder, Boolean, AbstractPart> factory) {

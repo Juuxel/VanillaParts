@@ -31,6 +31,6 @@ abstract class SlabBlockMixin extends Block implements NativeMultipart {
         if (Exclusions.isExcluded(state)) return null;
         SlabType type = state.get(SlabBlock.TYPE);
         if (type == SlabType.DOUBLE) return null;
-        return Collections.singletonList(holder -> new SlabPart(VpParts.SLAB_PARTS.get(this), holder, (SlabBlock) (Object) this, type == SlabType.TOP));
+        return Collections.singletonList(holder -> new SlabPart(VpParts.SLAB, holder, (SlabBlock) (Object) this, type == SlabType.TOP));
     }
 }

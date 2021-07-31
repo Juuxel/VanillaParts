@@ -7,13 +7,9 @@ package juuxel.vanillaparts.part;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import com.google.common.collect.ImmutableMap;
 import juuxel.vanillaparts.VanillaParts;
-import juuxel.vanillaparts.util.Util;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.util.DyeColor;
-import net.minecraft.util.registry.Registry;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public final class VpParts {
     // Block maps
@@ -22,8 +18,6 @@ public final class VpParts {
     // Part maps
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
     // TODO 1.17: This should use a single PartDefinition
-    public static final Map<Block, PartDefinition> SLAB_PARTS = new HashMap<>();
-    public static final Map<Block, PartDefinition> BUTTON_PARTS = new HashMap<>();
 
     // Parts
     // TODO 1.17: Standardise everything to use fromNbt and fromBuf
@@ -41,6 +35,7 @@ public final class VpParts {
     );
     public static final PartDefinition FENCE = new PartDefinition(VanillaParts.id("fence"), FencePart::fromNbt, FencePart::fromBuf);
     public static final PartDefinition SLAB = new PartDefinition(VanillaParts.id("slab"), SlabPart::fromNbt, SlabPart::fromBuf);
+    public static final PartDefinition BUTTON = new PartDefinition(VanillaParts.id("button"), ButtonPart::fromNbt, ButtonPart::fromBuf);
 
     private VpParts() {}
 
@@ -58,19 +53,7 @@ public final class VpParts {
         register(CAKE);
         register(FENCE);
         register(SLAB);
-
-        // Add slab, button and fence parts
-        Util.visitRegistry(Registry.BLOCK, (id, block) -> {
-            if (block instanceof AbstractButtonBlock) {
-                PartDefinition def = new PartDefinition(
-                        VanillaParts.id(id.getNamespace() + "/" + id.getPath()),
-                        (definition, holder, tag) -> new ButtonPart(definition, holder, block, tag),
-                        (definition, holder, buf, ctx) -> new ButtonPart(definition, holder, block, buf)
-                );
-                register(def);
-                BUTTON_PARTS.put(block, def);
-            }
-        });
+        register(BUTTON);
     }
 
     static {

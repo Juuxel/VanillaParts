@@ -11,23 +11,29 @@ import alexiil.mc.lib.multipart.api.event.PartEventEntityCollide;
 import alexiil.mc.lib.multipart.api.event.PartTickEvent;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
+import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
+import alexiil.mc.lib.net.InvalidInputDataException;
 import alexiil.mc.lib.net.NetByteBuf;
 import com.mojang.datafixers.DataFixUtils;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.AbstractButtonBlockAccessor;
+import juuxel.vanillaparts.util.NbtKeys;
 import juuxel.vanillaparts.util.Util;
-import net.minecraft.block.*;
+import net.minecraft.block.AbstractButtonBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.WallMountLocation;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 
 import java.util.List;
 
@@ -43,31 +49,40 @@ public class ButtonPart extends WallMountedRedstonePart {
         this.buttonBlock = (AbstractButtonBlockAccessor) buttonBlock;
     }
 
-    public ButtonPart(PartDefinition definition, MultipartHolder holder, Block buttonBlock, NbtCompound tag) {
-        this(definition, holder, buttonBlock, readFace(tag.getInt("Face")), Direction.byId(tag.getInt("Facing")));
-        this.powered = tag.getBoolean("Powered");
-        this.timer = tag.getInt("Timer");
+    public static ButtonPart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
+        Block block = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
+        var face = Util.safeGet(WallMountLocation.values(), nbt.getInt(NbtKeys.FACE));
+        var facing = Direction.byId(nbt.getInt(NbtKeys.FACING));
+        ButtonPart part = new ButtonPart(definition, holder, block, face, facing);
+        part.powered = nbt.getBoolean(NbtKeys.POWERED);
+        part.timer = nbt.getInt(NbtKeys.TIMER);
+        return part;
     }
 
-    public ButtonPart(PartDefinition definition, MultipartHolder holder, Block buttonBlock, NetByteBuf buf) {
-        this(definition, holder, buttonBlock, readFace(buf.readByte()), Direction.byId(buf.readByte()));
+    public static ButtonPart fromBuf(PartDefinition definition, MultipartHolder holder, NetByteBuf buf, IMsgReadCtx ctx) throws InvalidInputDataException {
+        Block block = Registry.BLOCK.get(buf.readIdentifierSafe());
+        var face = buf.readEnumConstant(WallMountLocation.class);
+        var facing = buf.readEnumConstant(Direction.class);
+        return new ButtonPart(definition, holder, block, face, facing);
     }
 
     @Override
     public NbtCompound toTag() {
         return DataFixUtils.make(super.toTag(), tag -> {
-            tag.putInt("Face", face.ordinal());
-            tag.putInt("Facing", facing.getId());
-            tag.putBoolean("Powered", powered);
-            tag.putInt("Timer", timer);
+            tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
+            tag.putInt(NbtKeys.FACE, face.ordinal());
+            tag.putInt(NbtKeys.FACING, facing.getId());
+            tag.putBoolean(NbtKeys.POWERED, powered);
+            tag.putInt(NbtKeys.TIMER, timer);
         });
     }
 
     @Override
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
-        buffer.writeByte((byte) face.ordinal());
-        buffer.writeByte((byte) facing.getId());
+        buffer.writeIdentifier(Registry.BLOCK.getId(block));
+        buffer.writeEnumConstant(face);
+        buffer.writeEnumConstant(facing);
     }
 
     @Override
