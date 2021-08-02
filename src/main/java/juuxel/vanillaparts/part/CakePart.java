@@ -41,16 +41,17 @@ public class CakePart extends VanillaPart {
         this.bites = bites;
     }
 
+    @Deprecated
     public CakePart(PartDefinition definition, MultipartHolder holder) {
         this(definition, holder, 0);
     }
 
-    public CakePart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
-        this(definition, holder, tag.getInt(NbtKeys.BITES));
+    public static CakePart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
+        return new CakePart(definition, holder, nbt.getInt(NbtKeys.BITES));
     }
 
-    public CakePart(PartDefinition definition, MultipartHolder holder, NetByteBuf buf) {
-        this(definition, holder, buf.readByte());
+    public static CakePart fromBuf(PartDefinition definition, MultipartHolder holder, NetByteBuf buf, IMsgReadCtx ctx) {
+        return new CakePart(definition, holder, buf.readByte());
     }
 
     @Override

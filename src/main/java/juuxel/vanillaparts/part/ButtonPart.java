@@ -19,7 +19,7 @@ import com.mojang.datafixers.DataFixUtils;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.AbstractButtonBlockAccessor;
 import juuxel.vanillaparts.util.NbtKeys;
-import juuxel.vanillaparts.util.Util;
+import juuxel.vanillaparts.util.NbtUtil;
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,7 +30,6 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
@@ -50,9 +49,9 @@ public class ButtonPart extends WallMountedRedstonePart {
     }
 
     public static ButtonPart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
-        Block block = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
-        var face = Util.safeGet(WallMountLocation.values(), nbt.getInt(NbtKeys.FACE));
-        var facing = Direction.byId(nbt.getInt(NbtKeys.FACING));
+        Block block = NbtUtil.getRegistryEntry(nbt, NbtKeys.BLOCK_ID, Registry.BLOCK);
+        var face = NbtUtil.getEnum(nbt, NbtKeys.FACE, WallMountLocation.class);
+        var facing = NbtUtil.getEnum(nbt, NbtKeys.FACING, Direction.class);
         ButtonPart part = new ButtonPart(definition, holder, block, face, facing);
         part.powered = nbt.getBoolean(NbtKeys.POWERED);
         part.timer = nbt.getInt(NbtKeys.TIMER);
@@ -69,9 +68,9 @@ public class ButtonPart extends WallMountedRedstonePart {
     @Override
     public NbtCompound toTag() {
         return DataFixUtils.make(super.toTag(), tag -> {
-            tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
-            tag.putInt(NbtKeys.FACE, face.ordinal());
-            tag.putInt(NbtKeys.FACING, facing.getId());
+            NbtUtil.putRegistryEntry(tag, NbtKeys.BLOCK_ID, Registry.BLOCK, block);
+            NbtUtil.putEnum(tag, NbtKeys.FACE, face);
+            NbtUtil.putEnum(tag, NbtKeys.FACING, facing);
             tag.putBoolean(NbtKeys.POWERED, powered);
             tag.putInt(NbtKeys.TIMER, timer);
         });
@@ -150,10 +149,6 @@ public class ButtonPart extends WallMountedRedstonePart {
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
         bus.addContextlessListener(this, PartTickEvent.class, this::tick);
         bus.addListener(this, PartEventEntityCollide.class, event -> tickWooden());
-    }
-
-    private static WallMountLocation readFace(int i) {
-        return Util.safeGet(WallMountLocation.values(), i);
     }
 
     @Override

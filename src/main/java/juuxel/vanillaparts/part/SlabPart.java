@@ -17,6 +17,7 @@ import com.mojang.datafixers.DataFixUtils;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.model.StaticVanillaModelKey;
 import juuxel.vanillaparts.util.NbtKeys;
+import juuxel.vanillaparts.util.NbtUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -25,7 +26,6 @@ import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import org.apache.logging.log4j.LogManager;
@@ -57,7 +57,7 @@ public class SlabPart extends VanillaPart {
     }
 
     public static SlabPart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
-        Block block = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
+        Block block = NbtUtil.getRegistryEntry(nbt, NbtKeys.BLOCK_ID, Registry.BLOCK);
         boolean top = nbt.getBoolean(NbtKeys.IS_TOP);
 
         if (!(block instanceof SlabBlock slab)) {
@@ -107,7 +107,7 @@ public class SlabPart extends VanillaPart {
     @Override
     public NbtCompound toTag() {
         return DataFixUtils.make(new NbtCompound(), tag -> {
-            tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
+            NbtUtil.putRegistryEntry(tag, NbtKeys.BLOCK_ID, Registry.BLOCK, block);
             tag.putBoolean(NbtKeys.IS_TOP, half == BlockHalf.TOP);
         });
     }

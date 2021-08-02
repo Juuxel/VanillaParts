@@ -4,7 +4,12 @@
 
 package juuxel.vanillaparts;
 
-import alexiil.mc.lib.multipart.api.*;
+import alexiil.mc.lib.multipart.api.AbstractPart;
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import alexiil.mc.lib.multipart.api.MultipartHolder;
+import alexiil.mc.lib.multipart.api.MultipartUtil;
+import alexiil.mc.lib.multipart.api.NativeMultipart;
+import alexiil.mc.lib.multipart.api.PartDefinition;
 import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.ButtonPart;
 import juuxel.vanillaparts.part.CakePart;
@@ -96,6 +101,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof FenceBlock) {
                 offer = handleFences(world, hit, pos, block);
             } else if (block == Blocks.CAKE) {
+                // TODO: Pull the bites from the block state tag
                 offer = handleSimple(world, pos, block, holder -> new CakePart(VpParts.CAKE, holder));
             } else {
                 for (Extension extension : extensions) {

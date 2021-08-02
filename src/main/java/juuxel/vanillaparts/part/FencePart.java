@@ -12,11 +12,11 @@ import alexiil.mc.lib.net.NetByteBuf;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.util.FenceExtensions;
 import juuxel.vanillaparts.util.NbtKeys;
+import juuxel.vanillaparts.util.NbtUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
@@ -35,7 +35,7 @@ public class FencePart extends HorizontallyConnectedPart {
     }
 
     public static FencePart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
-        Block fence = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
+        Block fence = NbtUtil.getRegistryEntry(nbt, NbtKeys.BLOCK_ID, Registry.BLOCK);
         boolean north = nbt.getBoolean(NbtKeys.NORTH);
         boolean east = nbt.getBoolean(NbtKeys.EAST);
         boolean south = nbt.getBoolean(NbtKeys.SOUTH);

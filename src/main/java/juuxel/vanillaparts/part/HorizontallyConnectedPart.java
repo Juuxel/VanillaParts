@@ -11,10 +11,15 @@ import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.PartAddedEvent;
 import alexiil.mc.lib.multipart.api.event.PartRemovedEvent;
 import alexiil.mc.lib.multipart.api.render.PartModelKey;
-import alexiil.mc.lib.net.*;
+import alexiil.mc.lib.net.IMsgReadCtx;
+import alexiil.mc.lib.net.IMsgWriteCtx;
+import alexiil.mc.lib.net.NetByteBuf;
+import alexiil.mc.lib.net.NetIdDataK;
+import alexiil.mc.lib.net.ParentNetIdSingle;
 import com.google.common.collect.ImmutableMap;
 import juuxel.blockstoparts.api.model.DynamicVanillaModelKey;
 import juuxel.vanillaparts.util.NbtKeys;
+import juuxel.vanillaparts.util.NbtUtil;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -201,7 +206,7 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     @Override
     public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
-            tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
+            NbtUtil.putRegistryEntry(tag, NbtKeys.BLOCK_ID, Registry.BLOCK, block);
             tag.putBoolean(NbtKeys.NORTH, north);
             tag.putBoolean(NbtKeys.EAST, east);
             tag.putBoolean(NbtKeys.SOUTH, south);

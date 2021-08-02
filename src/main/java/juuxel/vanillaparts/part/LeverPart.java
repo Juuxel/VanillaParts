@@ -9,11 +9,13 @@ import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.property.MultipartProperties;
 import alexiil.mc.lib.multipart.api.property.MultipartPropertyContainer;
+import alexiil.mc.lib.net.IMsgReadCtx;
 import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.LeverBlockAccessor;
 import juuxel.vanillaparts.util.NbtKeys;
+import juuxel.vanillaparts.util.NbtUtil;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,19 +36,25 @@ public class LeverPart extends WallMountedRedstonePart {
         super(definition, holder, face, facing, powered);
     }
 
-    public LeverPart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
-        this(definition, holder, readFace(tag.getInt(NbtKeys.FACE)), Direction.byId(tag.getInt(NbtKeys.FACING)), tag.getBoolean(NbtKeys.POWERED));
+    public static LeverPart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
+        var face = NbtUtil.getEnum(nbt, NbtKeys.FACE, WallMountLocation.class);
+        var facing = NbtUtil.getEnum(nbt, NbtKeys.FACING, Direction.class);
+        var powered = nbt.getBoolean(NbtKeys.POWERED);
+        return new LeverPart(definition, holder, face, facing, powered);
     }
 
-    public LeverPart(PartDefinition definition, MultipartHolder holder, NetByteBuf buf) {
-        this(definition, holder, readFace(buf.readByte()), Direction.byId(buf.readByte()), buf.readBoolean());
+    public static LeverPart fromBuf(PartDefinition definition, MultipartHolder holder, NetByteBuf buf, IMsgReadCtx ctx) {
+        var face = buf.readEnumConstant(WallMountLocation.class);
+        var facing = buf.readEnumConstant(Direction.class);
+        var powered = buf.readBoolean();
+        return new LeverPart(definition, holder, face, facing, powered);
     }
 
     @Override
     public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
-            tag.putInt(NbtKeys.FACE, face.ordinal());
-            tag.putInt(NbtKeys.FACING, facing.getId());
+            NbtUtil.putEnum(tag, NbtKeys.FACE, face);
+            NbtUtil.putEnum(tag, NbtKeys.FACING, facing);
             tag.putBoolean(NbtKeys.POWERED, powered);
         });
     }
@@ -54,8 +62,8 @@ public class LeverPart extends WallMountedRedstonePart {
     @Override
     public void writeCreationData(NetByteBuf buffer, IMsgWriteCtx ctx) {
         super.writeCreationData(buffer, ctx);
-        buffer.writeByte((byte) face.ordinal());
-        buffer.writeByte((byte) facing.getId());
+        buffer.writeEnumConstant(face);
+        buffer.writeEnumConstant(facing);
         buffer.writeBoolean(powered);
     }
 
@@ -89,10 +97,6 @@ public class LeverPart extends WallMountedRedstonePart {
         updateRedstoneLevels();
         MultipartPropertyContainer props = this.holder.getContainer().getProperties();
         props.setValue(this, MultipartProperties.CAN_EMIT_REDSTONE, true);
-    }
-
-    private static WallMountLocation readFace(int i) {
-        return Util.safeGet(WallMountLocation.values(), i);
     }
 
     @Override

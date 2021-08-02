@@ -4,7 +4,10 @@
 
 package juuxel.vanillaparts.part;
 
-import alexiil.mc.lib.multipart.api.*;
+import alexiil.mc.lib.multipart.api.MultipartContainer;
+import alexiil.mc.lib.multipart.api.MultipartEventBus;
+import alexiil.mc.lib.multipart.api.MultipartHolder;
+import alexiil.mc.lib.multipart.api.PartDefinition;
 import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.part.BasePart;

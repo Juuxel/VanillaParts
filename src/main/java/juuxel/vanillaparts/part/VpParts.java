@@ -19,7 +19,6 @@ public final class VpParts {
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
 
     // Parts
-    // TODO 1.17: Standardise everything to use fromNbt and fromBuf
     public static final PartDefinition TORCH = new PartDefinition(
             VanillaParts.id("torch"), TorchPart.fromNbt(Blocks.TORCH, Blocks.WALL_TORCH),
             TorchPart.fromBuf(Blocks.TORCH, Blocks.WALL_TORCH)
@@ -28,14 +27,8 @@ public final class VpParts {
             VanillaParts.id("soul_torch"), TorchPart.fromNbt(Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH),
             TorchPart.fromBuf(Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH)
     );
-    public static final PartDefinition LEVER = new PartDefinition(
-            VanillaParts.id("lever"), LeverPart::new,
-            ((definition, holder, buffer, ctx) -> new LeverPart(definition, holder, buffer))
-    );
-    public static final PartDefinition CAKE = new PartDefinition(
-            VanillaParts.id("cake"), CakePart::new,
-            ((definition, holder, buffer, ctx) -> new CakePart(definition, holder, buffer))
-    );
+    public static final PartDefinition LEVER = new PartDefinition(VanillaParts.id("lever"), LeverPart::fromNbt, LeverPart::fromBuf);
+    public static final PartDefinition CAKE = new PartDefinition(VanillaParts.id("cake"), CakePart::fromNbt, CakePart::fromBuf);
     public static final PartDefinition FENCE = new PartDefinition(VanillaParts.id("fence"), FencePart::fromNbt, FencePart::fromBuf);
     public static final PartDefinition SLAB = new PartDefinition(VanillaParts.id("slab"), SlabPart::fromNbt, SlabPart::fromBuf);
     public static final PartDefinition BUTTON = new PartDefinition(VanillaParts.id("button"), ButtonPart::fromNbt, ButtonPart::fromBuf);
