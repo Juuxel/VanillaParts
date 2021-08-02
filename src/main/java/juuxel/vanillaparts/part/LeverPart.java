@@ -70,9 +70,9 @@ public class LeverPart extends WallMountedRedstonePart {
     @Override
     public BlockState getBlockState() {
         return Blocks.LEVER.getDefaultState()
-                .with(LeverBlock.FACE, face)
-                .with(LeverBlock.FACING, facing)
-                .with(LeverBlock.POWERED, powered);
+            .with(LeverBlock.FACE, face)
+            .with(LeverBlock.FACING, facing)
+            .with(LeverBlock.POWERED, powered);
     }
 
     @Override

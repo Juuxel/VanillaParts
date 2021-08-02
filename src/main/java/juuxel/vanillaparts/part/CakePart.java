@@ -31,8 +31,8 @@ import java.util.Comparator;
 
 public class CakePart extends VanillaPart {
     private static final int MAX_BITES = CakeBlock.BITES.getValues().stream()
-            .max(Comparator.naturalOrder())
-            .orElseThrow(() -> new RuntimeException("Could not get max value of Properties.BITES!"));
+        .max(Comparator.naturalOrder())
+        .orElseThrow(() -> new RuntimeException("Could not get max value of Properties.BITES!"));
 
     private int bites;
 

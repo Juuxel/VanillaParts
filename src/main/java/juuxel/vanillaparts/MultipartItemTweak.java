@@ -90,7 +90,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
                 offer = handleCarpets(world, pos, block);
             } else if (block == Blocks.TORCH) {
                 offer = handleTorches(player, world, hand, hit, pos, VpParts.TORCH, Blocks.TORCH, Blocks.WALL_TORCH);
-            }else if (block == Blocks.SOUL_TORCH) {
+            } else if (block == Blocks.SOUL_TORCH) {
                 offer = handleTorches(player, world, hand, hit, pos, VpParts.SOUL_TORCH, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH);
             } else if (block instanceof SlabBlock) {
                 offer = handleSlabs(player, world, hand, hit, pos, block);
@@ -151,8 +151,8 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
         DyeColor color = ((DyedCarpetBlock) block).getDyeColor();
         return MultipartUtil.offerNewPart(
-                world, pos,
-                holder -> new CarpetPart(VpParts.CARPET_PARTS.get(color), holder, color)
+            world, pos,
+            holder -> new CarpetPart(VpParts.CARPET_PARTS.get(color), holder, color)
         );
     }
 
@@ -169,7 +169,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
         TorchPart.Facing facing = TorchPart.Facing.of(hit.getSide());
         return MultipartUtil.offerNewPart(
-                world, pos, holder -> new TorchPart(definition, holder, groundBlock, wallBlock, facing)
+            world, pos, holder -> new TorchPart(definition, holder, groundBlock, wallBlock, facing)
         );
     }
 
@@ -189,7 +189,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
         MultipartContainer.PartOffer offer = null;
         if (!isMissingContainer(world, originalPos) && hit.getSide().getAxis().isVertical()) {
             offer = MultipartUtil.offerNewPart(
-                    world, originalPos, holder -> factory.apply(holder, hit.getSide() == Direction.UP)
+                world, originalPos, holder -> factory.apply(holder, hit.getSide() == Direction.UP)
             );
         }
 
@@ -199,7 +199,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
                 return null;
 
             offer = MultipartUtil.offerNewPart(
-                    world, pos, holder -> factory.apply(holder, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
+                world, pos, holder -> factory.apply(holder, placementState.get(SlabBlock.TYPE) == SlabType.TOP)
             );
         }
 
@@ -213,22 +213,22 @@ public enum MultipartItemTweak implements UseBlockCallback {
             BlockState vanillaState;
             if (direction.getAxis().isVertical()) {
                 vanillaState = block.getDefaultState()
-                        .with(LeverBlock.FACE, direction == Direction.UP ? WallMountLocation.CEILING : WallMountLocation.FLOOR)
-                        .with(LeverBlock.FACING, ctx.getPlayerFacing());
+                    .with(LeverBlock.FACE, direction == Direction.UP ? WallMountLocation.CEILING : WallMountLocation.FLOOR)
+                    .with(LeverBlock.FACING, ctx.getPlayerFacing());
             } else {
                 vanillaState = block.getDefaultState()
-                        .with(LeverBlock.FACE, WallMountLocation.WALL)
-                        .with(LeverBlock.FACING, direction.getOpposite());
+                    .with(LeverBlock.FACE, WallMountLocation.WALL)
+                    .with(LeverBlock.FACING, direction.getOpposite());
             }
 
             if (vanillaState.canPlaceAt(world, pos)) {
                 return MultipartUtil.offerNewPart(
-                        world, pos,
-                        holder -> factory.create(
-                                holder,
-                                vanillaState.get(LeverBlock.FACE),
-                                vanillaState.get(LeverBlock.FACING)
-                        )
+                    world, pos,
+                    holder -> factory.create(
+                        holder,
+                        vanillaState.get(LeverBlock.FACE),
+                        vanillaState.get(LeverBlock.FACING)
+                    )
                 );
             }
         }

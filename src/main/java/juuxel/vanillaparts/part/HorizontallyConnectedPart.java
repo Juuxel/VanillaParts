@@ -39,12 +39,12 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     public static final NetIdDataK<HorizontallyConnectedPart> CONNECTION_DATA;
     private static final Direction[] HORIZONTAL_DIRECTIONS = { Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST };
     private static final ImmutableMap<Direction, BooleanProperty> DIRECTION_PROPERTIES =
-            ImmutableMap.of(
-                    Direction.NORTH, HorizontalConnectingBlock.NORTH,
-                    Direction.EAST, HorizontalConnectingBlock.EAST,
-                    Direction.SOUTH, HorizontalConnectingBlock.SOUTH,
-                    Direction.WEST, HorizontalConnectingBlock.WEST
-            );
+        ImmutableMap.of(
+            Direction.NORTH, HorizontalConnectingBlock.NORTH,
+            Direction.EAST, HorizontalConnectingBlock.EAST,
+            Direction.SOUTH, HorizontalConnectingBlock.SOUTH,
+            Direction.WEST, HorizontalConnectingBlock.WEST
+        );
 
     static {
         NET_HORIZONTALLY_CONNECTED = NET_ID.subType(HorizontallyConnectedPart.class, "vanilla_parts:horizontally_connected");
@@ -80,10 +80,10 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     @Override
     public BlockState getBlockState() {
         return block.getDefaultState()
-                .with(HorizontalConnectingBlock.NORTH, north)
-                .with(HorizontalConnectingBlock.EAST, east)
-                .with(HorizontalConnectingBlock.SOUTH, south)
-                .with(HorizontalConnectingBlock.WEST, west);
+            .with(HorizontalConnectingBlock.NORTH, north)
+            .with(HorizontalConnectingBlock.EAST, east)
+            .with(HorizontalConnectingBlock.SOUTH, south)
+            .with(HorizontalConnectingBlock.WEST, west);
     }
 
     @Override

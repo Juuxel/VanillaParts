@@ -39,8 +39,8 @@ public class SlabPart extends VanillaPart {
 
     static {
         SHAPES = ImmutableMap.of(
-                BlockHalf.BOTTOM, Block.createCuboidShape(0, 0, 0, 16, 8, 16),
-                BlockHalf.TOP, Block.createCuboidShape(0, 8, 0, 16, 16, 16)
+            BlockHalf.BOTTOM, Block.createCuboidShape(0, 0, 0, 16, 8, 16),
+            BlockHalf.TOP, Block.createCuboidShape(0, 8, 0, 16, 16, 16)
         );
     }
 

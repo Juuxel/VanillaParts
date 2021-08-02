@@ -38,8 +38,8 @@ abstract class FenceBlockMixin extends HorizontalConnectingBlock implements Fenc
     public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
         if (Exclusions.isExcluded(state)) return null;
         return Collections.singletonList(holder -> new FencePart(
-                VpParts.FENCE, holder,
-                this, state.get(NORTH), state.get(EAST), state.get(SOUTH), state.get(WEST)
+            VpParts.FENCE, holder,
+            this, state.get(NORTH), state.get(EAST), state.get(SOUTH), state.get(WEST)
         ));
     }
 

@@ -87,9 +87,9 @@ public class ButtonPart extends WallMountedRedstonePart {
     @Override
     public BlockState getBlockState() {
         return block.getDefaultState()
-                .with(AbstractButtonBlock.FACE, face)
-                .with(AbstractButtonBlock.FACING, facing)
-                .with(AbstractButtonBlock.POWERED, powered);
+            .with(AbstractButtonBlock.FACE, face)
+            .with(AbstractButtonBlock.FACING, facing)
+            .with(AbstractButtonBlock.POWERED, powered);
     }
 
     private void tick() {

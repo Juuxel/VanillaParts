@@ -38,11 +38,11 @@ public class TorchPart extends VanillaPart {
 
     static {
         SHAPES = ImmutableMap.of(
-                Facing.GROUND, Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 10.0, 10.0),
-                Facing.NORTH, Block.createCuboidShape(5.5, 3.0, 11.0, 10.5, 13.0, 16.0),
-                Facing.SOUTH, Block.createCuboidShape(5.5, 3.0, 0.0, 10.5, 13.0, 5.0),
-                Facing.WEST, Block.createCuboidShape(11.0, 3.0, 5.5, 16.0, 13.0, 10.5),
-                Facing.EAST, Block.createCuboidShape(0.0, 3.0, 5.5, 5.0, 13.0, 10.5)
+            Facing.GROUND, Block.createCuboidShape(6.0, 0.0, 6.0, 10.0, 10.0, 10.0),
+            Facing.NORTH, Block.createCuboidShape(5.5, 3.0, 11.0, 10.5, 13.0, 16.0),
+            Facing.SOUTH, Block.createCuboidShape(5.5, 3.0, 0.0, 10.5, 13.0, 5.0),
+            Facing.WEST, Block.createCuboidShape(11.0, 3.0, 5.5, 16.0, 13.0, 10.5),
+            Facing.EAST, Block.createCuboidShape(0.0, 3.0, 5.5, 5.0, 13.0, 10.5)
         );
     }
 
@@ -89,18 +89,18 @@ public class TorchPart extends VanillaPart {
     public void onAdded(MultipartEventBus bus) {
         super.onAdded(bus);
         bus.addListener(
-                this, PartAddedEvent.class,
-                event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, getBlockState().getLuminance())
+            this, PartAddedEvent.class,
+            event -> this.holder.getContainer().getProperties().setValue(this, MultipartProperties.LIGHT_VALUE, getBlockState().getLuminance())
         );
         bus.addContextlessListener(
-                this, PartTickEvent.class,
-                () -> {
-                    World world = getWorld();
-                    if (world.isClient && world.random.nextInt(10) == 0) {
-                        BlockState state = getBlockState();
-                        state.getBlock().randomDisplayTick(state, world, getPos(), world.random);
-                    }
+            this, PartTickEvent.class,
+            () -> {
+                World world = getWorld();
+                if (world.isClient && world.random.nextInt(10) == 0) {
+                    BlockState state = getBlockState();
+                    state.getBlock().randomDisplayTick(state, world, getPos(), world.random);
                 }
+            }
         );
     }
 
