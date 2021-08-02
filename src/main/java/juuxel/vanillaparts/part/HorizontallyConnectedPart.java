@@ -202,10 +202,10 @@ public abstract class HorizontallyConnectedPart extends VanillaPart {
     public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
             tag.putString(NbtKeys.BLOCK_ID, Registry.BLOCK.getId(block).toString());
-            tag.putBoolean("North", north);
-            tag.putBoolean("East", east);
-            tag.putBoolean("South", south);
-            tag.putBoolean("West", west);
+            tag.putBoolean(NbtKeys.NORTH, north);
+            tag.putBoolean(NbtKeys.EAST, east);
+            tag.putBoolean(NbtKeys.SOUTH, south);
+            tag.putBoolean(NbtKeys.WEST, west);
         });
     }
 

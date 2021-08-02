@@ -36,10 +36,10 @@ public class FencePart extends HorizontallyConnectedPart {
 
     public static FencePart fromNbt(PartDefinition definition, MultipartHolder holder, NbtCompound nbt) {
         Block fence = Registry.BLOCK.get(new Identifier(nbt.getString(NbtKeys.BLOCK_ID)));
-        boolean north = nbt.getBoolean("North");
-        boolean east = nbt.getBoolean("East");
-        boolean south = nbt.getBoolean("South");
-        boolean west = nbt.getBoolean("West");
+        boolean north = nbt.getBoolean(NbtKeys.NORTH);
+        boolean east = nbt.getBoolean(NbtKeys.EAST);
+        boolean south = nbt.getBoolean(NbtKeys.SOUTH);
+        boolean west = nbt.getBoolean(NbtKeys.WEST);
 
         return new FencePart(definition, holder, fence, north, east, south, west);
     }

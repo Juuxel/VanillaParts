@@ -13,6 +13,7 @@ import alexiil.mc.lib.net.IMsgWriteCtx;
 import alexiil.mc.lib.net.NetByteBuf;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.vanillaparts.mixin.LeverBlockAccessor;
+import juuxel.vanillaparts.util.NbtKeys;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -34,7 +35,7 @@ public class LeverPart extends WallMountedRedstonePart {
     }
 
     public LeverPart(PartDefinition definition, MultipartHolder holder, NbtCompound tag) {
-        this(definition, holder, readFace(tag.getInt("Face")), Direction.byId(tag.getInt("Facing")), tag.getBoolean("Powered"));
+        this(definition, holder, readFace(tag.getInt(NbtKeys.FACE)), Direction.byId(tag.getInt(NbtKeys.FACING)), tag.getBoolean(NbtKeys.POWERED));
     }
 
     public LeverPart(PartDefinition definition, MultipartHolder holder, NetByteBuf buf) {
@@ -44,9 +45,9 @@ public class LeverPart extends WallMountedRedstonePart {
     @Override
     public NbtCompound toTag() {
         return Util.with(super.toTag(), tag -> {
-            tag.putInt("Face", face.ordinal());
-            tag.putInt("Facing", facing.getId());
-            tag.putBoolean("Powered", powered);
+            tag.putInt(NbtKeys.FACE, face.ordinal());
+            tag.putInt(NbtKeys.FACING, facing.getId());
+            tag.putBoolean(NbtKeys.POWERED, powered);
         });
     }
 

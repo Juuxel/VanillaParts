@@ -17,7 +17,6 @@ public final class VpParts {
 
     // Part maps
     public static final ImmutableMap<DyeColor, PartDefinition> CARPET_PARTS;
-    // TODO 1.17: This should use a single PartDefinition
 
     // Parts
     // TODO 1.17: Standardise everything to use fromNbt and fromBuf
