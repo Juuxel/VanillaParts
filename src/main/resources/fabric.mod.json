@@ -27,10 +27,10 @@
   ],
 
   "depends": {
-    "minecraft": "~1.17.1",
-    "fabricloader": ">=0.11.0",
-    "fabric": ">=0.37.1",
-    "libmultipart": ">=0.6.3",
-    "blockstoparts": ">=0.1.0"
+    "minecraft": "~1.18.1",
+    "fabricloader": ">=0.12.12",
+    "fabric": ">=0.45.1",
+    "libmultipart": ">=0.7.0",
+    "blockstoparts": ">=0.2.1"
   }
 }

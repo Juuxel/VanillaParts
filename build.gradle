@@ -1,11 +1,19 @@
 plugins {
-    id 'fabric-loom' version '0.9-SNAPSHOT'
+    id 'fabric-loom' version '0.10-SNAPSHOT'
     id 'maven-publish'
     // TODO: Licenser and LQF
 }
 
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    if (!JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_17)) {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+}
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version + '+' + project.minecraft_version
@@ -32,6 +40,7 @@ dependencies {
     // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     modImplementation include("io.github.juuxel:BlocksToParts:$project.blockstoparts")
+    modImplementation include("alexiil.mc.lib:libmultipart-all:$project.libmultipart")
 
     //modRuntime group: "alexiil.mc.mod", name: "simplepipes-all", version: project.simplepipes
 
@@ -56,7 +65,7 @@ java {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-    options.release = 16
+    options.release = 17
 }
 
 jar {
@@ -67,13 +76,7 @@ jar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            // add all the jars that should be included when publishing to maven
-            artifact(remapJar) {
-                builtBy remapJar
-            }
-            artifact(sourcesJar) {
-                builtBy remapSourcesJar
-            }
+            from components.java
         }
     }
 }
