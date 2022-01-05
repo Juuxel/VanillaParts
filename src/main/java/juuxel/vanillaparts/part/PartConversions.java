@@ -66,6 +66,7 @@ public final class PartConversions {
         // Register for specific blocks
         NativeMultipart.LOOKUP.registerForBlocks(constantApi(LEVER), Blocks.LEVER);
         NativeMultipart.LOOKUP.registerForBlocks(constantApi(CAKE), Blocks.CAKE);
+        NativeMultipart.LOOKUP.registerForBlocks(constantApi(CARPET), VpParts.CARPETS.values().toArray(Block[]::new));
         registerTorch(VpParts.TORCH, Blocks.TORCH, Blocks.WALL_TORCH);
         registerTorch(VpParts.SOUL_TORCH, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH);
 
@@ -75,9 +76,7 @@ public final class PartConversions {
             if (Exclusions.isExcluded(state)) return null;
 
             Block block = state.getBlock();
-            if (block instanceof DyedCarpetBlock) {
-                return CARPET;
-            } else if (block instanceof SlabBlock) {
+            if (block instanceof SlabBlock) {
                 return SLAB;
             } else if (block instanceof FenceBlock) {
                 return FENCE;
