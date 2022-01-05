@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CakeBlock;
-import net.minecraft.block.DyedCarpetBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.LeverBlock;
 import net.minecraft.block.SlabBlock;
@@ -24,11 +23,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public final class PartConversions {
-    private static final NativeMultipart CARPET = create((world, pos, state) -> {
-        DyeColor color = ((DyedCarpetBlock) state.getBlock()).getDyeColor();
-        return holder -> new CarpetPart(VpParts.CARPET_PARTS.get(color), holder, color);
-    });
-
     private static final NativeMultipart LEVER = create(
         (world, pos, state) -> holder -> new LeverPart(
             VpParts.LEVER, holder,
@@ -66,7 +60,10 @@ public final class PartConversions {
         // Register for specific blocks
         NativeMultipart.LOOKUP.registerForBlocks(constantApi(LEVER), Blocks.LEVER);
         NativeMultipart.LOOKUP.registerForBlocks(constantApi(CAKE), Blocks.CAKE);
-        NativeMultipart.LOOKUP.registerForBlocks(constantApi(CARPET), VpParts.CARPETS.values().toArray(Block[]::new));
+        VpParts.CARPETS.forEach((color, block) -> {
+            NativeMultipart nativeMultipart = carpet(color);
+            NativeMultipart.LOOKUP.registerForBlocks(constantApi(nativeMultipart), block);
+        });
         registerTorch(VpParts.TORCH, Blocks.TORCH, Blocks.WALL_TORCH);
         registerTorch(VpParts.SOUL_TORCH, Blocks.SOUL_TORCH, Blocks.SOUL_WALL_TORCH);
 
@@ -118,6 +115,10 @@ public final class PartConversions {
             ),
             wallBlock
         );
+    }
+
+    private static NativeMultipart carpet(DyeColor color) {
+        return create((world, pos, state) -> holder -> new CarpetPart(VpParts.CARPET_PARTS.get(color), holder, color));
     }
 
     private static <A, C> BlockApiLookup.BlockApiProvider<A, C> constantApi(A api) {
