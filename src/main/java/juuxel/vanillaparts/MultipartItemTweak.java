@@ -133,7 +133,12 @@ public enum MultipartItemTweak implements UseBlockCallback {
     }
 
     public static boolean isMissingContainer(World world, BlockPos pos) {
-        return !(world.getBlockState(pos).getBlock() instanceof NativeMultipart) && MultipartUtil.get(world, pos) == null;
+        return !isNativeMultipart(world, pos) && MultipartUtil.get(world, pos) == null;
+    }
+
+    private static boolean isNativeMultipart(World world, BlockPos pos) {
+        BlockState state = world.getBlockState(pos);
+        return state.getBlock() instanceof NativeMultipart || NativeMultipart.LOOKUP.find(world, pos, state, null, null) != null;
     }
 
     private MultipartContainer.PartOffer handleSimple(World world, BlockPos pos, Block block, MultipartContainer.MultipartCreator creator) {

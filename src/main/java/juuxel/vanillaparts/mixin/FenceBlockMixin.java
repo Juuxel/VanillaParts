@@ -6,10 +6,7 @@ package juuxel.vanillaparts.mixin;
 
 import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
-import alexiil.mc.lib.multipart.api.NativeMultipart;
-import juuxel.vanillaparts.lib.Exclusions;
 import juuxel.vanillaparts.part.FencePart;
-import juuxel.vanillaparts.part.VpParts;
 import juuxel.vanillaparts.util.FenceExtensions;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.Block;
@@ -25,22 +22,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.Collections;
-import java.util.List;
-
 @Mixin(FenceBlock.class)
-abstract class FenceBlockMixin extends HorizontalConnectingBlock implements FenceExtensions, NativeMultipart {
+abstract class FenceBlockMixin extends HorizontalConnectingBlock implements FenceExtensions {
     private FenceBlockMixin(float f, float g, float h, float i, float j, Settings settings) {
         super(f, g, h, i, j, settings);
-    }
-
-    @Override
-    public List<MultipartContainer.MultipartCreator> getMultipartConversion(World world, BlockPos pos, BlockState state) {
-        if (Exclusions.isExcluded(state)) return null;
-        return Collections.singletonList(holder -> new FencePart(
-            VpParts.FENCE, holder,
-            this, state.get(NORTH), state.get(EAST), state.get(SOUTH), state.get(WEST)
-        ));
     }
 
     @Override

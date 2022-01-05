@@ -1,19 +1,12 @@
 {
   "required": true,
   "package": "juuxel.vanillaparts.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_17",
 
   "mixins": [
     "AbstractButtonBlockAccessor",
-    "AbstractButtonBlockMixin",
-    "CakeBlockMixin",
-    "DyedCarpetBlockMixin",
     "FenceBlockMixin",
-    "LeverBlockAccessor",
-    "LeverBlockMixin",
-    "SlabBlockMixin",
-    "TorchBlockMixin",
-    "WallTorchBlockMixin"
+    "LeverBlockAccessor"
   ],
   "client": [
     "client.MultipartBlockMixin"

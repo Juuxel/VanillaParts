@@ -31,6 +31,6 @@
     "fabricloader": ">=0.12.12",
     "fabric": ">=0.45.1",
     "libmultipart": ">=0.7.0",
-    "blockstoparts": ">=0.2.1"
+    "blockstoparts": ">=0.2.2"
   }
 }
