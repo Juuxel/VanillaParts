@@ -57,8 +57,7 @@ public abstract class VanillaPart extends BasePart {
         return getOutlineShape();
     }
 
-    protected void addCategories(CategorySet.Builder builder) {
-    }
+    protected abstract void addCategories(CategorySet.Builder builder);
 
     @Override
     public final CategorySet getCategories() {
