@@ -8,9 +8,6 @@
     "FenceBlockMixin",
     "LeverBlockAccessor"
   ],
-  "client": [
-    "client.MultipartBlockMixin"
-  ],
   "injectors": {
     "defaultRequire": 1
   }

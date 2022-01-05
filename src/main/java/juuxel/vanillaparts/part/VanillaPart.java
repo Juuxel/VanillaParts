@@ -8,10 +8,9 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartEventBus;
 import alexiil.mc.lib.multipart.api.MultipartHolder;
 import alexiil.mc.lib.multipart.api.PartDefinition;
-import alexiil.mc.lib.multipart.api.event.NeighbourUpdateEvent;
+import alexiil.mc.lib.multipart.api.event.NeighbourStateUpdateEvent;
 import juuxel.blockstoparts.api.category.CategorySet;
 import juuxel.blockstoparts.api.part.BasePart;
-import juuxel.vanillaparts.event.ClientNeighbourUpdateEvent;
 import juuxel.vanillaparts.util.Util;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
@@ -34,16 +33,16 @@ public abstract class VanillaPart extends BasePart {
 
     @Override
     public void onAdded(MultipartEventBus bus) {
-        bus.addListener(this, NeighbourUpdateEvent.class, event -> {
-            MultipartContainer container = this.holder.getContainer();
-            World world = container.getMultipartWorld();
-            BlockPos pos = container.getMultipartPos();
-            if (!getBlockState().canPlaceAt(world, pos)) {
-                this.removeAndDrop();
+        bus.addListener(this, NeighbourStateUpdateEvent.class, event -> {
+            if (!getWorld().isClient) {
+                MultipartContainer container = this.holder.getContainer();
+                World world = container.getMultipartWorld();
+                BlockPos pos = container.getMultipartPos();
+                if (!getBlockState().canPlaceAt(world, pos)) {
+                    this.removeAndDrop();
+                }
             }
-            onNeighborUpdate(event.pos);
-        });
-        bus.addListener(this, ClientNeighbourUpdateEvent.class, event -> {
+
             onNeighborUpdate(event.pos);
         });
     }
