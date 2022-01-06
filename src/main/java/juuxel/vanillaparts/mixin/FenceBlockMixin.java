@@ -8,39 +8,40 @@ import alexiil.mc.lib.multipart.api.MultipartContainer;
 import alexiil.mc.lib.multipart.api.MultipartUtil;
 import juuxel.vanillaparts.part.FencePart;
 import juuxel.vanillaparts.util.FenceExtensions;
-import juuxel.vanillaparts.util.Util;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(FenceBlock.class)
 abstract class FenceBlockMixin extends HorizontalConnectingBlock implements FenceExtensions {
-    private FenceBlockMixin(float f, float g, float h, float i, float j, Settings settings) {
-        super(f, g, h, i, j, settings);
+    @Shadow
+    protected abstract boolean canConnectToFence(BlockState state);
+
+    private FenceBlockMixin(float radius1, float radius2, float boundingHeight1, float boundingHeight2, float collisionHeight, Settings settings) {
+        super(radius1, radius2, boundingHeight1, boundingHeight2, collisionHeight, settings);
     }
 
     @Override
-    public boolean vanillaParts_canConnect(WorldAccess world, BlockPos neighborPos, Direction sideOfOther) {
+    public boolean vanillaParts_canConnectToMultiparts(WorldAccess world, BlockPos neighborPos, Direction sideOfOther) {
         MultipartContainer container = MultipartUtil.get(world, neighborPos);
-        return container != null && !container.getAllParts(part -> part instanceof FencePart && ((FencePart) part).getBlock().getDefaultState().getMaterial() == this.material && !((FencePart) part).isBlocked(sideOfOther)).isEmpty();
+        return container != null && !container.getAllParts(part -> part instanceof FencePart fence && canConnectToFence(fence.getBlockState()) && !((FencePart) part).isBlocked(sideOfOther)).isEmpty();
     }
 
     @Redirect(method = "getStateForNeighborUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
-    private boolean redirectCanConnect_getStateForNeighborUpdate(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, BlockState bs1, Direction d1, BlockState bs2, WorldAccess world, BlockPos pos1, BlockPos pos2) {
-        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(world, pos2, sideOfOther);
+    private boolean redirectCanConnect_getStateForNeighborUpdate(FenceBlock self, BlockState neighborState1, boolean neighborIsFullSquare, Direction sideOfOther, BlockState state, Direction direction, BlockState neighborState2, WorldAccess world, BlockPos pos, BlockPos neighborPos) {
+        return self.canConnect(neighborState1, neighborIsFullSquare, sideOfOther) || vanillaParts_canConnectToMultiparts(world, neighborPos, sideOfOther);
     }
 
     @Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FenceBlock;canConnect(Lnet/minecraft/block/BlockState;ZLnet/minecraft/util/math/Direction;)Z"))
-    private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, ItemPlacementContext ctx) {
-        return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()), sideOfOther);
+    private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean neighborIsFullSquare, Direction sideOfOther, ItemPlacementContext ctx) {
+        return self.canConnect(state, neighborIsFullSquare, sideOfOther) || vanillaParts_canConnectToMultiparts(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()), sideOfOther);
     }
 }

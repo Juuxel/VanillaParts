@@ -9,5 +9,5 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
 
 public interface FenceExtensions {
-    boolean vanillaParts_canConnect(WorldAccess world, BlockPos neighborPos, Direction sideOfOther);
+    boolean vanillaParts_canConnectToMultiparts(WorldAccess world, BlockPos neighborPos, Direction sideOfOther);
 }

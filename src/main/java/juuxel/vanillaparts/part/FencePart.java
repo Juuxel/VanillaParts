@@ -64,7 +64,7 @@ public class FencePart extends HorizontallyConnectedPart {
         BlockState state = getWorld().getBlockState(neighborPos);
         Direction sideOfOther = d.getOpposite();
         boolean isSideSolidFullSquare = state.isSideSolidFullSquare(getWorld(), neighborPos, sideOfOther);
-        return ((FenceBlock) block).canConnect(state, isSideSolidFullSquare, sideOfOther) || ((FenceExtensions) block).vanillaParts_canConnect(getWorld(), neighborPos, sideOfOther);
+        return ((FenceBlock) block).canConnect(state, isSideSolidFullSquare, sideOfOther) || ((FenceExtensions) block).vanillaParts_canConnectToMultiparts(getWorld(), neighborPos, sideOfOther);
     }
 
     @Override
