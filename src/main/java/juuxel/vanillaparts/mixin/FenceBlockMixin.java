@@ -43,11 +43,4 @@ abstract class FenceBlockMixin extends HorizontalConnectingBlock implements Fenc
     private boolean redirectCanConnect_getPlacementState(FenceBlock self, BlockState state, boolean b, Direction sideOfOther, ItemPlacementContext ctx) {
         return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()), sideOfOther);
     }
-
-    // TODO: https://github.com/AlexIIL/LibMultiPart/pull/36
-    @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block source, BlockPos neighborPos, boolean flag) {
-        super.neighborUpdate(state, world, pos, source, neighborPos, flag);
-        replace(state, state.getStateForNeighborUpdate(Util.compare(pos, neighborPos), world.getBlockState(neighborPos), world, pos, neighborPos), world, pos, 3);
-    }
 }
