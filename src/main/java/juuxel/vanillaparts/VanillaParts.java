@@ -5,7 +5,7 @@
 package juuxel.vanillaparts;
 
 import juuxel.vanillaparts.lib.VpTags;
-import juuxel.vanillaparts.part.PartConversions;
+import juuxel.vanillaparts.part.VpNativeMultiparts;
 import juuxel.vanillaparts.part.VpParts;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -20,7 +20,7 @@ public final class VanillaParts implements ModInitializer {
     public void onInitialize() {
         VpParts.init();
         VpTags.init();
-        PartConversions.init();
+        VpNativeMultiparts.init();
 
         // Register part placement tweak
         UseBlockCallback.EVENT.register(MultipartItemTweak.INSTANCE);

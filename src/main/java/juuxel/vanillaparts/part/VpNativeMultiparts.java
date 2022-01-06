@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public final class PartConversions {
+public final class VpNativeMultiparts {
     private static final NativeMultipart LEVER = create(
         (world, pos, state) -> holder -> new LeverPart(
             VpParts.LEVER, holder,
