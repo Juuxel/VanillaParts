@@ -39,7 +39,7 @@ public abstract class VanillaPart extends BasePart {
                 World world = container.getMultipartWorld();
                 BlockPos pos = container.getMultipartPos();
                 if (!getBlockState().canPlaceAt(world, pos)) {
-                    this.removeAndDrop();
+                    breakPart();
                 }
             }
 

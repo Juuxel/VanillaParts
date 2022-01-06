@@ -44,6 +44,7 @@ abstract class FenceBlockMixin extends HorizontalConnectingBlock implements Fenc
         return self.canConnect(state, b, sideOfOther) || vanillaParts_canConnect(ctx.getWorld(), ctx.getBlockPos().offset(sideOfOther.getOpposite()), sideOfOther);
     }
 
+    // TODO: https://github.com/AlexIIL/LibMultiPart/pull/36
     @Override
     public void neighborUpdate(BlockState state, World world, BlockPos pos, Block source, BlockPos neighborPos, boolean flag) {
         super.neighborUpdate(state, world, pos, source, neighborPos, flag);

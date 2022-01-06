@@ -30,7 +30,7 @@
     "minecraft": "~1.18.1",
     "fabricloader": ">=0.12.12",
     "fabric": ">=0.45.1",
-    "libmultipart": ">=0.7.1-pre.6",
-    "blockstoparts": ">=0.2.2"
+    "libmultipart": ">=0.7.1-pre.7",
+    "blockstoparts": ">=0.2.3"
   }
 }
