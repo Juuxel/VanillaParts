@@ -47,6 +47,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -267,6 +268,7 @@ public enum MultipartItemTweak implements UseBlockCallback {
 
     @FunctionalInterface
     public interface Extension {
-        /*@Nullable*/ MultipartContainer.PartOffer handle(Block block, PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos);
+        @Nullable
+        MultipartContainer.PartOffer handle(Block block, PlayerEntity player, World world, Hand hand, BlockHitResult hit, BlockPos pos);
     }
 }

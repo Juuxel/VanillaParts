@@ -8,6 +8,7 @@ import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
@@ -21,5 +22,5 @@ public interface AbstractButtonBlockAccessor {
     int callGetPressTicks();
 
     @Invoker
-    void callPlayClickSound(/*@Nullable*/ PlayerEntity player, WorldAccess world, BlockPos pos, boolean powered);
+    void callPlayClickSound(@Nullable PlayerEntity player, WorldAccess world, BlockPos pos, boolean powered);
 }
