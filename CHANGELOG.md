@@ -4,7 +4,7 @@ Based on the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format.
 Since this isn't a library, doesn't follow Semantic Versioning,
 but major versions still indicate breaking changes to worlds etc.
 
-## Unreleased
+## 2.0.0 - 2022-01-15
 ### Added
 - `#vanilla_parts:excluded` block tag
   for excluding blocks from becoming parts
