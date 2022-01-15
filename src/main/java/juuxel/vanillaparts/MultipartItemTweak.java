@@ -26,6 +26,7 @@ import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.CakeBlock;
 import net.minecraft.block.DyedCarpetBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.LeverBlock;
@@ -38,6 +39,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ActionResult;
@@ -102,8 +105,17 @@ public enum MultipartItemTweak implements UseBlockCallback {
             } else if (block instanceof FenceBlock) {
                 offer = handleFences(world, hit, pos, block);
             } else if (block == Blocks.CAKE) {
-                // TODO: Pull the bites from the block state tag
-                offer = handleSimple(world, pos, block, holder -> new CakePart(VpParts.CAKE, holder));
+                NbtCompound blockStateTag = stack.getSubNbt("BlockStateTag");
+                String bitesProperty = CakeBlock.BITES.getName();
+                int bites;
+
+                if (blockStateTag != null && blockStateTag.contains(bitesProperty, NbtElement.NUMBER_TYPE)) {
+                    bites = blockStateTag.getInt(bitesProperty);
+                } else {
+                     bites = 0;
+                }
+
+                offer = handleSimple(world, pos, block, holder -> new CakePart(VpParts.CAKE, holder, bites));
             } else {
                 for (Extension extension : extensions) {
                     offer = extension.handle(block, player, world, hand, hit, pos);

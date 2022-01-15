@@ -28,6 +28,8 @@ but major versions still indicate breaking changes to worlds etc.
   [Blocks to Parts](https://github.com/Juuxel/BlocksToParts).
 - Updated to Minecraft 1.18.1.
 - Reduced the amount of mixins dramatically thanks to LibMultiPart updates.
+- Cakes placed in multipart containers now get the proper bite count from
+  the item's `BlockStateTag` NBT data
 
 ### Fixed
 - Fix torch luminance being 15 instead of 14
