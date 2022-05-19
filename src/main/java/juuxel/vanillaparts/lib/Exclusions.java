@@ -10,6 +10,6 @@ public final class Exclusions {
     }
 
     public static boolean isExcluded(Block block) {
-        return VpTags.EXCLUDED.contains(block) || block instanceof BlockEntityProvider;
+        return block.getRegistryEntry().isIn(VpTags.EXCLUDED) || block instanceof BlockEntityProvider;
     }
 }

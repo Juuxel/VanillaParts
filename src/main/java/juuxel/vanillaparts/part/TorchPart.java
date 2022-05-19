@@ -26,10 +26,12 @@ import net.minecraft.block.WallTorchBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.StringIdentifiable;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class TorchPart extends VanillaPart {
     private static final ImmutableMap<Facing, VoxelShape> SHAPES;
@@ -76,7 +78,7 @@ public class TorchPart extends VanillaPart {
     }
 
     @Override
-    public ItemStack getPickStack() {
+    public ItemStack getPickStack(@Nullable BlockHitResult hitResult) {
         return new ItemStack(Blocks.TORCH);
     }
 

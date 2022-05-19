@@ -26,10 +26,12 @@ import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.VoxelShape;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 public class SlabPart extends VanillaPart {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -91,7 +93,7 @@ public class SlabPart extends VanillaPart {
     }
 
     @Override
-    public ItemStack getPickStack() {
+    public ItemStack getPickStack(@Nullable BlockHitResult hitResult) {
         return new ItemStack(block);
     }
 

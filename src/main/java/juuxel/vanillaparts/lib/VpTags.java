@@ -1,12 +1,12 @@
 package juuxel.vanillaparts.lib;
 
 import juuxel.vanillaparts.VanillaParts;
-import net.fabricmc.fabric.api.tag.TagFactory;
 import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
+import net.minecraft.util.registry.Registry;
 
 public final class VpTags {
-    public static final Tag<Block> EXCLUDED = TagFactory.BLOCK.create(VanillaParts.id("excluded"));
+    public static final TagKey<Block> EXCLUDED = TagKey.of(Registry.BLOCK_KEY, VanillaParts.id("excluded"));
 
     public static void init() {
     }
